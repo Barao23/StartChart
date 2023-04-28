@@ -91,26 +91,30 @@ df = pd.DataFrame(list(colecao_vendas.find()))
 df_despesa = pd.DataFrame(list(colecao_despesas.find()))
 df.drop('_id', axis=1, inplace=True)
 df_despesa.drop('_id', axis=1, inplace=True)
+
+
 print(df)
 print(df.empty)
 print(df.isnull().any(axis=1).any())
 
 # Tratamento df
 df = df.dropna(how='all') #apagando as linhas vazias
-utila_linha_vazia = df.index[df.applymap(lambda x: x != '').all(axis=1)][-1]# Obtém o índice das últimas linhas não vazias
-df = df.drop(index=df.index[utila_linha_vazia+1:])# Remove as linhas vazias após a última linha não vazia
 df['Data da Venda'] = pd.to_datetime(df['Data da Venda'].astype(str), format='%Y-%m-%d') # Atribui o formato data para a coluna Data da Venda
 df['Quantidade'] = pd.to_numeric(df['Quantidade'], downcast ='signed') #Convertendo a coluna quantidade para inteiro
 df['Valor (R$)'] = pd.to_numeric(df['Valor (R$)'], downcast ='signed')
+utila_linha_vazia = df.index[df.applymap(lambda x: x != '').all(axis=1)][-1]# Obtém o índice das últimas linhas não vazias
+df = df.drop(index=df.index[utila_linha_vazia+1:])# Remove as linhas vazias após a última linha não vazia
+
 
 
 # Tratamento df
 df_despesa = df_despesa.dropna(how='all') #apagando as linhas vazias
-utila_linha_vazia = df_despesa.index[df_despesa.applymap(lambda x: x != '').all(axis=1)][-1]# Obtém o índice das últimas linhas não vazias
-df_despesa = df_despesa.drop(index=df_despesa.index[utila_linha_vazia+1:])# Remove as linhas vazias após a última linha não vazia
 df_despesa['Data Pagamento'] = pd.to_datetime(df_despesa['Data Pagamento'].astype(str), format='%Y-%m-%d') # Atribui o formato data para a coluna Data Pagamento
 df_despesa['Data Vencimento'] = pd.to_datetime(df_despesa['Data Vencimento'].astype(str), format='%Y-%m-%d') # Atribui o formato data para a coluna Data Vencimento
 df_despesa['Valor (R$)'] = pd.to_numeric(df_despesa['Valor (R$)'], downcast ='signed')
+utila_linha_vazia = df_despesa.index[df_despesa.applymap(lambda x: x != '').all(axis=1)][-1]# Obtém o índice das últimas linhas não vazias
+df_despesa = df_despesa.drop(index=df_despesa.index[utila_linha_vazia+1:])# Remove as linhas vazias após a última linha não vazia
+
 
     #return df, df_despesa
 

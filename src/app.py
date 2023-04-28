@@ -10,15 +10,6 @@ aux = dbc.themes.FLATLY
 app = Dash(__name__, use_pages=True, external_stylesheets=[aux, dbc.icons.BOOTSTRAP], suppress_callback_exceptions=True)
 server = app.server
 
-# Criando o banco de dados não relacional como MongoDB
-# Conectando com o servidor local
-local = MongoClient('mongodb://mongo:fJcgxCwg6hiLD3whcRwM@containers-us-west-58.railway.app:5659')
-
-# Criando database do projeto+
-database = local['dashboard_startup']
-
-# Criando um grupo de documentos no MongoDB
-doc_venda = database.baseVendas
 
 
 # Importação das fontes
