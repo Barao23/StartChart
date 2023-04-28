@@ -11,7 +11,6 @@ app = Dash(__name__, use_pages=True, external_stylesheets=[aux, dbc.icons.BOOTST
 server = app.server
 
 
-
 # Importação das fontes
 external_stylesheets = ['https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,600;0,700;1,400&display=swap']
 # Estilo da fonte que será utilizada
@@ -133,4 +132,3 @@ def label_dropdown(pathname):
 
 if __name__ == "__main__":
     app.run_server(debug=True)
-

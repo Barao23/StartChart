@@ -53,7 +53,7 @@ popup_erro = dcc.ConfirmDialog(
 
 # Criando o banco de dados não relacional como MongoDB
 # Conectando com o servidor local
-client = MongoClient("mongodb://mongo:fJcgxCwg6hiLD3whcRwM@containers-us-west-58.railway.app:5659")
+client = MongoClient("mongodb+srv://tcc_122051:tnPQdZLXfyi3hMMw@tcc-122051.sy9tzlz.mongodb.net/test")
 
 # Criando database do projeto
 database = client['dashboardstartup']
@@ -164,7 +164,7 @@ layout = html.Div([
     
     # Div para receber a tabela dos dados que foram carregados
   
-    html.Div(id='output-data-upload-despesas', style={'background-color': 'white'}),
+    html.Div(id='output-data-upload-despesas', style={'background-color': '#EBECF0'}),
 
     
 

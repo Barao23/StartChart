@@ -68,60 +68,48 @@ def enviar_alerta(assunto, texto, destino):
 
 
 
-global df
-global df_despesa
 
 # Função para carregar os dados de despesa e vendas a partir do MongoDB
-#def carregar_dados():
-# Conectando com o servidor local
-local = MongoClient('mongodb://mongo:fJcgxCwg6hiLD3whcRwM@containers-us-west-58.railway.app:5659')
+def carregar_dados():
+    # Conectando com o servidor local
+    local_vendas = MongoClient('mongodb+srv://tcc_122051:tnPQdZLXfyi3hMMw@tcc-122051.sy9tzlz.mongodb.net/test')
 
-# Acessando o banco de dados de vendas
-database = local['dashboardstartup']
+    # Acessando o banco de dados de vendas
+    database_vendas = local_vendas['dashboardstartup']
 
-# Acessando a coleção de vendas
-colecao_vendas = database['baseVendas']
+    # Acessando a coleção de vendas
+    colecao_vendas = database_vendas['baseVendas']
 
-# Acessando a coleção de Despesas
-colecao_despesas = database['baseDespesas']
+    # Acessando a coleção de Despesas
+    colecao_despesas = database_vendas['baseDespesas']
 
-# Consultando a coleção e convertendo em DataFrame
-df = pd.DataFrame(list(colecao_vendas.find()))
-# Consultando a coleção e convertendo em DataFrame
-df_despesa = pd.DataFrame(list(colecao_despesas.find()))
-df.drop('_id', axis=1, inplace=True)
-df_despesa.drop('_id', axis=1, inplace=True)
+    # Consultando a coleção e convertendo em DataFrame
+    df = pd.DataFrame(list(colecao_vendas.find()))
+    # Consultando a coleção e convertendo em DataFrame
+    df_despesa = pd.DataFrame(list(colecao_despesas.find()))
+    
+    # Tratamento df
+    df = df.dropna(how='all') #apagando as linhas vazias
+    utila_linha_vazia = df.index[df.applymap(lambda x: x != '').all(axis=1)][-1]# Obtém o índice das últimas linhas não vazias
+    df = df.drop(index=df.index[utila_linha_vazia+1:])# Remove as linhas vazias após a última linha não vazia
+    df['Data da Venda'] = pd.to_datetime(df['Data da Venda'].astype(str), format='%Y-%m-%d') # Atribui o formato data para a coluna Data da Venda
+    df['Quantidade'] = pd.to_numeric(df['Quantidade'], downcast ='signed') #Convertendo a coluna quantidade para inteiro
+    df['Valor (R$)'] = pd.to_numeric(df['Valor (R$)'], downcast ='signed')
 
+    # Tratamento df
+    df_despesa = df_despesa.dropna(how='all') #apagando as linhas vazias
+    utila_linha_vazia = df_despesa.index[df_despesa.applymap(lambda x: x != '').all(axis=1)][-1]# Obtém o índice das últimas linhas não vazias
+    df_despesa = df_despesa.drop(index=df_despesa.index[utila_linha_vazia+1:])# Remove as linhas vazias após a última linha não vazia
+    df_despesa['Data Pagamento'] = pd.to_datetime(df_despesa['Data Pagamento'].astype(str), format='%Y-%m-%d') # Atribui o formato data para a coluna Data Pagamento
+    df_despesa['Data Vencimento'] = pd.to_datetime(df_despesa['Data Vencimento'].astype(str), format='%Y-%m-%d') # Atribui o formato data para a coluna Data Vencimento
+    df_despesa['Valor (R$)'] = pd.to_numeric(df_despesa['Valor (R$)'], downcast ='signed')
 
-print(df)
-print(df.empty)
-print(df.isnull().any(axis=1).any())
-
-# Tratamento df
-df = df.dropna(how='all') #apagando as linhas vazias
-df['Data da Venda'] = pd.to_datetime(df['Data da Venda'].astype(str), format='%Y-%m-%d') # Atribui o formato data para a coluna Data da Venda
-df['Quantidade'] = pd.to_numeric(df['Quantidade'], downcast ='signed') #Convertendo a coluna quantidade para inteiro
-df['Valor (R$)'] = pd.to_numeric(df['Valor (R$)'], downcast ='signed')
-utila_linha_vazia = df.index[df.applymap(lambda x: x != '').all(axis=1)][-1]# Obtém o índice das últimas linhas não vazias
-df = df.drop(index=df.index[utila_linha_vazia+1:])# Remove as linhas vazias após a última linha não vazia
-
-
-
-# Tratamento df
-df_despesa = df_despesa.dropna(how='all') #apagando as linhas vazias
-df_despesa['Data Pagamento'] = pd.to_datetime(df_despesa['Data Pagamento'].astype(str), format='%Y-%m-%d') # Atribui o formato data para a coluna Data Pagamento
-df_despesa['Data Vencimento'] = pd.to_datetime(df_despesa['Data Vencimento'].astype(str), format='%Y-%m-%d') # Atribui o formato data para a coluna Data Vencimento
-df_despesa['Valor (R$)'] = pd.to_numeric(df_despesa['Valor (R$)'], downcast ='signed')
-utila_linha_vazia = df_despesa.index[df_despesa.applymap(lambda x: x != '').all(axis=1)][-1]# Obtém o índice das últimas linhas não vazias
-df_despesa = df_despesa.drop(index=df_despesa.index[utila_linha_vazia+1:])# Remove as linhas vazias após a última linha não vazia
-
-
-    #return df, df_despesa
+    return df, df_despesa
 
 
 # função para formatar os ANOS como opções de DropdownMenu
 def gerar_opcoes_ano():
-    #df, df_despesa = carregar_dados()
+    df, df_despesa = carregar_dados()
 
     # Obtendo lista de anos do dataframe vendas
     ano_vendas = sorted(df['Data da Venda'].dt.year.unique())
@@ -138,7 +126,7 @@ def gerar_opcoes_ano():
 # função para formatar os MESES como opções de DropdownMenu
 def gerar_opcoes_mes(ano):
 
-    #df, df_despesa = carregar_dados() # Obtendo os dados da tabela
+    df, df_despesa = carregar_dados() # Obtendo os dados da tabela
     
     # Obtendo lista de meses do dataframe vendas
     meses_vendas = sorted(df[df['Data da Venda'].dt.year == ano]['Data da Venda'].dt.month.unique())
@@ -381,7 +369,7 @@ def mapa(df, ano, mes, filtro = 'mes'):
                 mapbox_style = "open-street-map", # Estilo do mapa "open-street-map" - "carto-positron"
                 center={"lat":-14, "lon": -55},
                 zoom=2.5,
-                color_continuous_scale=px.colors.sequential.RdBu_r, # Estilo da cor
+                color_continuous_scale=px.colors.sequential.RdBu, # Estilo da cor
                 # Inverti para que as cores quentes representassem o maior valor transacionado (R$).
                 opacity=0.8,
                 )
@@ -491,8 +479,7 @@ def pie_chart_mapa(df, ano, mes, filtro = 'mes'):
                       marker_colors=px.colors.sequential.RdBu, #Inverti para que as cores quentes representassem o maior valor transacionado (R$).
                       hole=0.4,
                       showlegend=True,
-                      textinfo='label+percent',
-                      hovertemplate='Produto %{label}: %{percent:.1%} <br>Quantidade: %{value}'),
+                      textinfo='label+percent'),
                        
               row=1, col=1
         )
@@ -975,7 +962,7 @@ layout = html.Div(
                 'margin-top':'30px', 'margin-left':'30px', 'margin-right':'10px'})
         
 
-    ], style={'display':'flex', 'justify-content': 'center', 'margin-bottom': '50px'}
+    ], style={'display':'flex', 'justify-content': 'center'}
     ),
 
     dcc.Interval(
@@ -1051,7 +1038,7 @@ def pop_up(n1, n2, estado):
 
 def carregar_output(intervalo, ano, mes, mes_aux, n_ano, n_mes, n_mes_total, ano_selecionado, mes_selecionado):
 
-    #df, df_despesa = carregar_dados() #Chamando a função que carrega os dados a partir do MongoDB
+    df, df_despesa = carregar_dados() #Chamando a função que carrega os dados a partir do MongoDB
     
     # Obtendo o ano e o mês selecionado
     # Obtenha o id do ano selecionado no filtro-ano
@@ -1221,7 +1208,7 @@ def atualizar_dropdown_label(ano, mes, mes_full, ano_aux, pos_mes, pos_mes_aux):
 # Análise coorte
 def func_coorte(ano):
     # Obtendo o DataFrame
-    #df, _ = carregar_dados() # Obtendo os dados da tabela
+    df, _ = carregar_dados() # Obtendo os dados da tabela
     # Selecionando os dados de acordo com o ano
     selecao = df[(df['Data da Venda'].dt.year == ano)]
     # Criando uma coluna nova contendo apenas o mês e o ano analisado.
@@ -1271,7 +1258,7 @@ def func_coorte(ano):
             z=churn.T.values,  # Dados da tabela pivoteada
             #x=churn.T.columns.tolist(),  # Nomes das colunas
             #y=churn.T.index.tolist(),  # Nomes das linhas
-            colorscale='RdBu_r',  # Esquema de cores
+            colorscale='RdBu',  # Esquema de cores
             showlegend = False,
             showscale=True,
             hovertemplate = 'Atividade: %{z:.2%}<br>Data: %{y}',
@@ -1354,17 +1341,17 @@ def func_coorte(ano):
 # Função para gráfico de barras e pie
 def bar_pie_graph(ano):
     # Obtendo os Data Frames
-    #df_vendas, df_despesas = carregar_dados() # Obtendo os dados da tabela
+    df_vendas, df_despesas = carregar_dados() # Obtendo os dados da tabela
 
     # Tratando Data Frame das vendas 
     # Selecionando os dados de acordo com o ano
-    df_vendas = df[(df['Data da Venda'].dt.year == ano)]
+    df_vendas = df_vendas[(df_vendas['Data da Venda'].dt.year == ano)]
     # Criando uma coluna nova contendo apenas o mês e o ano analisado.
     df_vendas['Data'] = df_vendas['Data da Venda'].apply(lambda x: x.strftime('%Y-%m'))
     
     # Tratando Data Frame das despesas 
     # Selecionando os dados de acordo com o ano
-    df_despesas = df_despesa[(df_despesa['Data Pagamento'].dt.year == ano)]
+    df_despesas = df_despesas[(df_despesas['Data Pagamento'].dt.year == ano)]
     # Criando uma coluna nova contendo apenas o mês e o ano analisado.
     df_despesas['Data'] = df_despesas['Data Pagamento'].apply(lambda x: x.strftime('%Y-%m'))
    
@@ -1428,13 +1415,14 @@ def bar_pie_graph(ano):
     fig_bar.update_yaxes(showgrid=True, gridcolor='lightgray', title_font=dict(size=16, family = 'Poppins, sans-serif'))
 
     fig_pie = px.pie()
-    
+
+    print(len(df_despesas))
     if len(df_despesas) > 0:
 
         # Criando o gráfico de despesas por departamento 
         fig_pie = px.sunburst(df_despesas, path=['Departamento', 'Tipo de despesa'], 
-                            color_continuous_scale='RdBu_r', values='Valor (R$)', 
-                            color='Valor (R$)'
+                            color_continuous_scale='RdBu', values='Valor (R$)', 
+                            color='Valor (R$)',
                     )
     
         # Editando o gráfico 
@@ -1453,7 +1441,7 @@ def bar_pie_graph(ano):
                     family='Poppins, sans-serif',
                     size=10,
                 ),
-            )
+            ),
             
         )
 
@@ -1659,12 +1647,8 @@ def enviar_email(_, data, ultimo_envio, atraso, tamanho_passado):
             ultimo_envio = dt.today()
             tamanho_passado = atraso
             enviar_alerta('Atividade atrasada',
-               f'Este é um lembrete amigável de que você possui {atraso} tarefas em atraso no StartChart. '
-               f'Por favor, verifique as tarefas pendentes e conclua-as assim que possível. '
-               f'\nLembre-se de que as tarefas em atraso podem afetar o desempenho geral da empresa.'
-               f'\n'
-               f'\nCordialmente,'
-               f'\nStartChart',
+               f'Você possui {atraso} em atraso. '
+               f'Por favor, verifique as suas tarefas no Dashboard Financeiro',
                'reiskayron@gmail.com') 
             
         return dash.no_update, ultimo_envio, tamanho_passado 
