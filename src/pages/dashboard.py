@@ -47,7 +47,7 @@ mes_atual = dt.today().month
 
 
 # Conectando com o servidor local
-local_vendas = MongoClient('mongodb+srv://tcc_122051:tnPQdZLXfyi3hMMw@tcc-122051.sy9tzlz.mongodb.net/test')
+local_vendas = MongoClient('mongodb://mongo:fJcgxCwg6hiLD3whcRwM@containers-us-west-58.railway.app:5659')
 
 # Acessando o banco de dados de vendas
 database_vendas = local_vendas['dashboardstartup']
