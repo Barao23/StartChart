@@ -45,6 +45,21 @@ horario = datetime.now().strftime("%H:%M")
 mes_atual = dt.today().month
 
 
+
+# Conectando com o servidor local
+local_vendas = MongoClient('mongodb+srv://tcc_122051:tnPQdZLXfyi3hMMw@tcc-122051.sy9tzlz.mongodb.net/test')
+
+# Acessando o banco de dados de vendas
+database_vendas = local_vendas['dashboardstartup']
+
+# Acessando a coleção de vendas
+colecao_vendas = database_vendas['baseVendas']
+
+# Acessando a coleção de Despesas
+colecao_despesas = database_vendas['baseDespesas']
+
+
+
 # Função para enviar alertas no e-mail https://mailtrap.io/blog/python-send-email-gmail/
 def enviar_alerta(assunto, texto, destino):
 
@@ -71,17 +86,6 @@ def enviar_alerta(assunto, texto, destino):
 
 # Função para carregar os dados de despesa e vendas a partir do MongoDB
 def carregar_dados():
-    # Conectando com o servidor local
-    local_vendas = MongoClient('mongodb+srv://tcc_122051:tnPQdZLXfyi3hMMw@tcc-122051.sy9tzlz.mongodb.net/test')
-
-    # Acessando o banco de dados de vendas
-    database_vendas = local_vendas['dashboardstartup']
-
-    # Acessando a coleção de vendas
-    colecao_vendas = database_vendas['baseVendas']
-
-    # Acessando a coleção de Despesas
-    colecao_despesas = database_vendas['baseDespesas']
 
     # Consultando a coleção e convertendo em DataFrame
     df = pd.DataFrame(list(colecao_vendas.find()))
