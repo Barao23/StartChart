@@ -12,9 +12,9 @@ server = app.server
 
 # Criando o banco de dados não relacional como MongoDB
 # Conectando com o servidor local
-local = MongoClient('mongodb+srv://tcc_122051:tnPQdZLXfyi3hMMw@tcc-122051.sy9tzlz.mongodb.net/test')
+local = MongoClient('mongodb://mongo:fJcgxCwg6hiLD3whcRwM@containers-us-west-58.railway.app:5659')
 
-# Criando database do projeto
+# Criando database do projeto+
 database = local['dashboard_startup']
 
 # Criando um grupo de documentos no MongoDB

@@ -74,21 +74,26 @@ global df_despesa
 # Função para carregar os dados de despesa e vendas a partir do MongoDB
 #def carregar_dados():
 # Conectando com o servidor local
-local_vendas = MongoClient('mongodb+srv://tcc_122051:tnPQdZLXfyi3hMMw@tcc-122051.sy9tzlz.mongodb.net/test')
+local = MongoClient('mongodb://mongo:fJcgxCwg6hiLD3whcRwM@containers-us-west-58.railway.app:5659')
 
 # Acessando o banco de dados de vendas
-database_vendas = local_vendas['dashboardstartup']
+database = local['dashboardstartup']
 
 # Acessando a coleção de vendas
-colecao_vendas = database_vendas['baseVendas']
+colecao_vendas = database['baseVendas']
 
 # Acessando a coleção de Despesas
-colecao_despesas = database_vendas['baseDespesas']
+colecao_despesas = database['baseDespesas']
 
 # Consultando a coleção e convertendo em DataFrame
 df = pd.DataFrame(list(colecao_vendas.find()))
 # Consultando a coleção e convertendo em DataFrame
 df_despesa = pd.DataFrame(list(colecao_despesas.find()))
+df.drop('_id', axis=1, inplace=True)
+df_despesa.drop('_id', axis=1, inplace=True)
+print(df)
+print(df.empty)
+print(df.isnull().any(axis=1).any())
 
 # Tratamento df
 df = df.dropna(how='all') #apagando as linhas vazias
@@ -97,6 +102,7 @@ df = df.drop(index=df.index[utila_linha_vazia+1:])# Remove as linhas vazias apó
 df['Data da Venda'] = pd.to_datetime(df['Data da Venda'].astype(str), format='%Y-%m-%d') # Atribui o formato data para a coluna Data da Venda
 df['Quantidade'] = pd.to_numeric(df['Quantidade'], downcast ='signed') #Convertendo a coluna quantidade para inteiro
 df['Valor (R$)'] = pd.to_numeric(df['Valor (R$)'], downcast ='signed')
+
 
 # Tratamento df
 df_despesa = df_despesa.dropna(how='all') #apagando as linhas vazias

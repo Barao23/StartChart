@@ -53,7 +53,7 @@ popup_erro = dcc.ConfirmDialog(
 
 # Criando o banco de dados não relacional como MongoDB
 # Conectando com o servidor local
-client = MongoClient("mongodb+srv://tcc_122051:tnPQdZLXfyi3hMMw@tcc-122051.sy9tzlz.mongodb.net/test")
+client = MongoClient("mongodb://mongo:fJcgxCwg6hiLD3whcRwM@containers-us-west-58.railway.app:5659")
 
 # Criando database do projeto
 database = client['dashboardstartup']
@@ -164,7 +164,7 @@ layout = html.Div([
     
     # Div para receber a tabela dos dados que foram carregados
   
-    html.Div(id='output-data-upload', style={'background-color': '#EBECF0'}),
+    html.Div(id='output-data-upload', style={'background-color': 'white'}),
 
     
 
@@ -226,7 +226,10 @@ layout = html.Div([
 
     # Ativa uma vez por dia ou quando a página é recarregada
     dcc.Interval(id= 'mongoDB', interval = 86400000, n_intervals = 0),
-],  style={'height': 'auto', 'margin': '0 '} 
+
+    html.Div(id='espaço', children=[]),
+    html.Div(id='espaço2', children=[])
+], 
 ),
 
 def apagar_Mango(n):
@@ -710,4 +713,3 @@ def pop_up(abrir, cancelar, confirmar, estado):
     if abrir or cancelar or confirmar:
         return not estado
     return estado
-
