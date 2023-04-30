@@ -129,31 +129,22 @@ layout = html.Div([
     ]),
 
     # Div para o botão de criar gráficos e download modelo
-    html.Div([
     # Gráfico
     html.Div([
-        html.P(''),
-        dbc.Button(
-        " \xa0 Novo Gráfico", color="primary", id = "novo_grafico",
-        outline = False, n_clicks=0, className="bi bi-bar-chart-fill")
-    ], style = {'width': '87%', 'display': 'inline-block'}),
-    # Download Modelo
-    html.Div([
-        # Botão para download do modelo CSV.
+        dbc.Button(" \xa0 Novo Gráfico", color="primary", id = "novo_grafico", 
+                   outline = False, n_clicks=0, className="bi bi-bar-chart-fill", 
+                   style={'margin-top':'30px', 'margin-left':'15px'}),
+        
         dbc.Row([
-        dbc.Button(
-        " \xa0 Download Modelo", color="primary", id = "click-despesas-modelo-csv",
-        outline = False, className="bi bi-download"),
-        dcc.Download(id="despesas-csv"),
-        ],
-        # Dimensões do botão
-            style={
-                'width':'27vh',
-                'height':'3vh',
-            }
-        )
-    ], style = {'width': '13%', 'display': 'inline-block'})
-    ]),
+
+            dbc.Button(
+            " \xa0 Download Modelo", color="primary", id = "click-despesas-modelo-csv",
+            outline = False, className="bi bi-download"),
+            dcc.Download(id="despesas-csv"),
+
+        ], style = {'margin-top':'30px', 'margin-right': '15px'})
+
+    ], style = {'display':'flex', 'justify-content':'space-between'}),
 
     html.P(' '),
 
@@ -234,7 +225,7 @@ layout = html.Div([
 
 def apagar_Mango(n):
     record = {
-    "Tipo de despesa": "",    
+    "Tipo de gasto": "",    
     "Descrição": "",
     "Valor (R$)": "",
     "Data Pagamento": "",
@@ -315,7 +306,7 @@ def output(conteudo, mongo, n, nome, datas, popup_displayed):
     
     
     columns_aux_despesa = [
-        "Tipo de despesa",
+        "Tipo de gasto",
         "Descrição",
         "Valor (R$)",
         "Data Pagamento",
@@ -340,14 +331,10 @@ def output(conteudo, mongo, n, nome, datas, popup_displayed):
 
 
     columns= [{'name': i, 'id': i} for i in result.columns]
-    #[{'name': 'Vendedor', 'id': 'Vendedor'}, {'name': 'Data da Venda', 'id': 'Data da Venda'}, 
-    # {'name': 'Cliente', 'id': 'Cliente'}, {'name': 'Valor (R$)', 'id': 'Valor (R$)'}, 
-    # {'name': 'Cod_Produto', 'id': 'Cod_Produto'}, {'name': 'Quantidade', 'id': 'Quantidade'}, 
-    # {'name': 'UF', 'id': 'UF'}, {'name': 'Forma_Pagamento', 'id': 'Forma_Pagamento'}]
     # Criando um dicionário com os tipos de input para cada coluna desejada
     
     input_types = {
-    "Tipo de despesa": "text",
+    "Tipo de gasto": "text",
     "Descrição": "text",
     "Valor (R$)": "numeric",
     "Data Pagamento": "datetime",
@@ -401,8 +388,8 @@ def output(conteudo, mongo, n, nome, datas, popup_displayed):
 
             # Legenda para ao passar o mouse sobre a tabela
             tooltip={
-                'Tipo de despesa': {
-                    'value': 'Tipo de despesa',
+                'Tipo de gasto': {
+                    'value': 'Tipo de gasto',
                     'use_with': 'both' #Células e o header
                 },        
                 'Data Pagamento': {
@@ -481,8 +468,8 @@ def salvar_Mango(n, dados):
 def download(n, dados):
     df = pd.DataFrame(dados)
     if n is not None:
-        return dcc.send_data_frame(df.to_excel, "tabela_despesas.xlsx",
-            sheet_name="Despesas", index = False)
+        return dcc.send_data_frame(df.to_excel, "tabela_gastos.xlsx",
+            sheet_name="gastos", index = False)
 
 
 
@@ -667,12 +654,12 @@ def pop_up(abrir, fechar, estado):
 # Função Download do arquivo modelo vendas
 def download(n_clicks):
     if n_clicks is not None:
-        return dcc.send_data_frame(arquivo_modelo.to_excel, "modelo_despesas.xlsx",
-            sheet_name="Modelo", index = False)
+        return dcc.send_data_frame(arquivo_modelo.to_excel, "modelo_gastos.xlsx",
+            sheet_name="Modelo de gastos", index = False)
 
 
 # Arquivo Modelo Vendas (Download)
-arquivo_modelo = pd.DataFrame(columns=['Tipo de despesa', "Descrição", "Valor (R$)", "Data Pagamento",  "Data Vencimento", 
+arquivo_modelo = pd.DataFrame(columns=['Tipo de gasto', "Descrição", "Valor (R$)", "Data Pagamento",  "Data Vencimento", 
 "Departamento"])
 
 

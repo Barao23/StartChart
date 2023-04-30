@@ -129,31 +129,22 @@ layout = html.Div([
     ]),
 
     # Div para o botão de criar gráficos e download modelo
-    html.Div([
     # Gráfico
     html.Div([
-        html.P(''),
-        dbc.Button(
-        " \xa0 Novo Gráfico", color="primary", id = "novo_grafico",
-        outline = False, n_clicks=0, className="bi bi-bar-chart-fill")
-    ], style = {'width': '87%', 'display': 'inline-block'}),
-    # Download Modelo
-    html.Div([
-        # Botão para download do modelo CSV.
+        dbc.Button(" \xa0 Novo Gráfico", color="primary", id = "novo_grafico", 
+                   outline = False, n_clicks=0, className="bi bi-bar-chart-fill", 
+                   style={'margin-top':'30px', 'margin-left':'15px'}),
+        
         dbc.Row([
-        dbc.Button(
-        " \xa0 Download Modelo", color="primary", id = "click-vendas-modelo-csv",
-        outline = False, className="bi bi-download"),
-        dcc.Download(id="vendas-csv"),
-        ],
-        # Dimensões do botão
-            style={
-                'width':'27vh',
-                'height':'3vh',
-            }
-        )
-    ], style = {'width': '13%', 'display': 'inline-block'})
-    ]),
+
+            dbc.Button(
+            " \xa0 Download Modelo", color="primary", id = "click-despesas-modelo-csv",
+            outline = False, className="bi bi-download"),
+            dcc.Download(id="despesas-csv"),
+
+        ], style = {'margin-top':'30px', 'margin-right': '15px'})
+
+    ], style = {'display':'flex', 'justify-content':'space-between'}),
 
     html.P(' '),
 

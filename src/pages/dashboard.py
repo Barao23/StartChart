@@ -30,6 +30,7 @@ from urllib.request import urlopen
 import smtplib                         
 from email.message import EmailMessage  
 
+
 # Importação das fontes
 external_stylesheets = ['https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,600;0,700;1,400&display=swap']
 
@@ -86,7 +87,7 @@ def enviar_alerta(assunto, texto, destino):
 
 # Função para carregar os dados de despesa e vendas a partir do MongoDB
 def carregar_dados():
-
+    
     # Consultando a coleção e convertendo em DataFrame
     df = pd.DataFrame(list(colecao_vendas.find()))
     # Consultando a coleção e convertendo em DataFrame
@@ -158,7 +159,7 @@ def card_numvendas(df, ano, mes, filtro='mes'):
 
     num_vendas = selecao['Quantidade'].count()
     ticket_m = float((selecao['Valor (R$)'].sum())/num_vendas)
-    ticket_medio = 'R${:.2f}'.format(ticket_m)
+    ticket_medio = 'R${:,.2f}'.format(ticket_m)
 
     #calculando o ticket_medio do periodo anterior:
     
@@ -178,7 +179,7 @@ def card_numvendas(df, ano, mes, filtro='mes'):
         else:
             x = 'border-start border-warning border-2' #Número de Transações
             style_var_nunvendas = 'bi bi-dash text-warning bg-light rounded' # style sem variação
-        var_nunvendas = '{:.2f}%'.format(var_nunvend)
+        var_nunvendas = '{:,.2f}%'.format(var_nunvend)
 
     ticket_medio_passado = float(selecao_passado['Valor (R$)'].sum()/num_vendas_passado)
     if ticket_medio_passado == 0:
@@ -192,7 +193,7 @@ def card_numvendas(df, ano, mes, filtro='mes'):
             style_varticket = 'bi bi-caret-down-fill text-danger bg-light rounded' # style para variação negativa
         else:
             style_varticket = 'bi bi-dash text-warning bg-light rounded' # style sem variação
-        variacao_ticket = '{:.2f}%'.format(variacao_tick)
+        variacao_ticket = '{:,.2f}%'.format(variacao_tick)
     
     return x, num_vendas, var_nunvendas, style_var_nunvendas, ticket_medio, variacao_ticket, style_varticket
 
@@ -211,7 +212,7 @@ def card_faturamentocard(df, ano, mes, filtro='mes'):
 
     # Faturamento atual
     faturamento = selecao['Valor (R$)'].sum()
-    fatur = 'R$ {:.2f}'.format(faturamento)
+    fatur = 'R$ {:,.2f}'.format(faturamento)
 
     # Faturamento passado
     faturamento_passado = selecao_passado['Valor (R$)'].sum()
@@ -232,7 +233,7 @@ def card_faturamentocard(df, ano, mes, filtro='mes'):
         else:
             card_fatur = 'border-start border-warning border-2' #Faturamento
             style_var_faturamento = 'bi bi-dash text-warning bg-light rounded' # style sem variação
-        var_faturamento = '{:.2f}%'.format(var_fatur)
+        var_faturamento = '{:,.2f}%'.format(var_fatur)
 
     
     return card_fatur, fatur, var_faturamento, style_var_faturamento
@@ -253,7 +254,7 @@ def card_despesascard(df, ano, mes, filtro='mes'):
 
     # Despesas atual
     despesas = selecao['Valor (R$)'].sum()
-    desp = 'R$ {:.2f}'.format(despesas)
+    desp = 'R$ {:,.2f}'.format(despesas)
 
     # Despesas passado
     despesas_passado = selecao_passado['Valor (R$)'].sum()
@@ -274,7 +275,7 @@ def card_despesascard(df, ano, mes, filtro='mes'):
         else:
             card_desp = 'border-start border-warning border-2' #Faturamento
             style_var_despesas = 'bi bi-dash text-warning bg-light rounded' # style sem variação
-        var_despesas = '{:.2f}%'.format(var_desp)
+        var_despesas = '{:,.2f}%'.format(var_desp)
 
     
     return card_desp, desp, var_despesas, style_var_despesas
@@ -302,7 +303,7 @@ def card_res(df, df_despesas, ano, mes, filtro='mes'):
 
     # Resultado atual
     result = selecao_faturamento['Valor (R$)'].sum() - selecao_despesas['Valor (R$)'].sum()
-    resultado = 'R$ {:.2f}'.format(result)
+    resultado = 'R$ {:,.2f}'.format(result)
 
     # resultado passado
     result_passado = selecao_passado_faturamento['Valor (R$)'].sum() - selecao_passado_despesas['Valor (R$)'].sum()
@@ -326,9 +327,9 @@ def card_res(df, df_despesas, ano, mes, filtro='mes'):
             style_var_resultado = 'bi bi-dash text-warning bg-light rounded' # style sem variação
         
         if result_passado >= 0:
-            var_resultado = '{:.2f}% no lucro'.format(var_resultado)
+            var_resultado = '{:,.2f}% no lucro'.format(var_resultado)
         else:
-            var_resultado = '{:.2f}% no prejuízo'.format(var_resultado)
+            var_resultado = '{:,.2f}% no prejuízo'.format(var_resultado)
 
     return card_result, resultado, var_resultado, style_var_resultado
 
@@ -357,10 +358,6 @@ def mapa(df, ano, mes, filtro = 'mes'):
     vendas_uf.columns = ['UF', 'Quantidade de vendas', 'Volume Transacionado (R$)'] # Alterando o nome da coluna
     vendas_uf['UF'] = vendas_uf['UF'].map(id_estado)
 
-    # Formatação dos valores para hover data
-    #vendas_uf['Volume Transacionado (R$)'] = (vendas_uf['Volume Transacionado (R$)'].apply(lambda x: '{:.2f}'.format(x)))
-    #vendas_uf['Quantidade de vendas'] = vendas_uf['Quantidade de vendas'].astype(int)
-
     # Fazedno o mapa
     fig = px.choropleth_mapbox(
                 vendas_uf,  # DataFrame com a quantidade de vendas por UF
@@ -373,14 +370,21 @@ def mapa(df, ano, mes, filtro = 'mes'):
                 mapbox_style = "open-street-map", # Estilo do mapa "open-street-map" - "carto-positron"
                 center={"lat":-14, "lon": -55},
                 zoom=2.5,
-                color_continuous_scale=px.colors.sequential.RdBu, # Estilo da cor
+                color_continuous_scale=px.colors.sequential.RdBu_r, # Estilo da cor
                 # Inverti para que as cores quentes representassem o maior valor transacionado (R$).
                 opacity=0.8,
                 )
     
     fig.update_coloraxes(colorbar=dict(
-    title='Volume Transacionado',
-    tickprefix='R$',
+    title=dict(
+        text='Volume Transacionado',
+        font=dict(
+            family='Poppins, sans-serif',
+            size=16,
+            color='black',
+        ),
+    ),
+    tickprefix='R$ ',
     thickness=15,
     lenmode='fraction',
     len=0.6,
@@ -389,11 +393,10 @@ def mapa(df, ano, mes, filtro = 'mes'):
     yanchor='middle',
     ))
 
-    #fig.update_geos(fitbounds = "locations", visible = False)
     fig.update_layout(
         margin={"r":0,"t":0,"l":0,"b":0},
         font=dict(
-        family="Monteserrat",
+        family='Poppins, sans-serif',
         size=14),
         height= 600
     )
@@ -418,7 +421,7 @@ def fat_desp(df, df_despesas, ano, mes, filtro = 'mes'):
 
     # Calcula o total das despesas no mesmo período de tempo do faturamento
     despesas = selecao_despesas.groupby('Data Pagamento', as_index=False)['Valor (R$)'].sum()
-    despesas.columns = ['Data', 'Despesas']
+    despesas.columns = ['Data', 'Gastos']
     
 
     # Contruindo o gráfico
@@ -428,15 +431,15 @@ def fat_desp(df, df_despesas, ano, mes, filtro = 'mes'):
         go.Scatter(x=faturamento['Data'], y=faturamento['Faturamento'],
                    name='Receita',
                    line=dict(color='#31729C', width=2),
-                   hovertemplate='Data: %{x}<br>Receita: R$ %{y:.2f}')
+                   hovertemplate='Data: %{x}<br>Receita: R$ %{y:,.2f}')
     )
 
     # Adiciona a série de dados de despesas ao gráfico
     fig.add_trace(
-        go.Scatter(x=despesas['Data'], y=despesas['Despesas'],
-                   name='Despesas',
+        go.Scatter(x=despesas['Data'], y=despesas['Gastos'],
+                   name='Gastos',
                    line=dict(color='#FF3D27', width=2),
-                   hovertemplate='Data: %{x}<br>Despesas: R$ %{y:.2f}')
+                   hovertemplate='Data: %{x}<br>Gastos: R$ %{y:,.2f}')
     )
 
     # Layout do gáfico
@@ -480,10 +483,11 @@ def pie_chart_mapa(df, ano, mes, filtro = 'mes'):
 
     fig.add_trace(go.Pie(values=quantidade_pie['Quantidade'], 
                       labels=quantidade_pie['Cod_Produto'],
-                      marker_colors=px.colors.sequential.RdBu, #Inverti para que as cores quentes representassem o maior valor transacionado (R$).
+                      marker_colors=px.colors.sequential.RdBu_r, #Inverti para que as cores quentes representassem o maior valor transacionado (R$).
                       hole=0.4,
                       showlegend=True,
-                      textinfo='label+percent'),
+                      textinfo='label+percent',
+                      hovertemplate = 'Cód. do produto: %{label}<br>Quantidade: %{value}'),
                        
               row=1, col=1
         )
@@ -497,7 +501,7 @@ def pie_chart_mapa(df, ano, mes, filtro = 'mes'):
                     showlegend = False,
                     showscale=True,
                     texttemplate='%{z}',
-                    hovertemplate = 'Cod_produto: %{x}<br>Quantidade: %{z}'
+                    hovertemplate = 'Cód. do produto: %{x}<br>Quantidade: %{z}'
                 ),
             row=2, col=1
         )
@@ -506,8 +510,11 @@ def pie_chart_mapa(df, ano, mes, filtro = 'mes'):
         font=dict(size=14, family='Poppins, sans-serif'),
         title={
             'text': "Quantidade x Produto",
-            'font': {'size': 24, 'family': 'Poppins, sans-serif'}
+            'font': {'size': 24, 'family': 'Poppins, sans-serif'},
+            'y': 0.94, # Ajustando a posição do título do gráfico verticalmente
+            'x': 0.08  # Ajustando a posição do título do gráfico horizontalmente
         },
+
         template='plotly_white',
         height = 600,
         plot_bgcolor='white',
@@ -589,7 +596,9 @@ def pie_ToDo(children):
         font=dict(size=14, family='Poppins, sans-serif'),
         title={
             'text': "Tarefas",
-            'font': {'size': 24, 'family': 'Poppins, sans-serif'}
+            'font': {'size': 24, 'family': 'Poppins, sans-serif'},
+            'y': 0.92,
+            'x':0.08
         },
         template='plotly_white',
     )
@@ -610,7 +619,16 @@ card_numerovendas = dbc.Card(id = 'card-quantidadeVendas', children=[
             ),
             dbc.CardImgOverlay(
                 dbc.CardBody([
-                    html.H4("Número Transações", style = {'color': 'white', 'fontWeight': 'bold', 'margin': '0px'}),
+
+                    html.Div([
+                        html.H4("Número Transações", style = {'color': 'white', 'fontWeight': 'bold', 'margin': '0px'}),
+                        # Definindo o ícone info com a descrição do card
+                        html.I(className="bi bi-info-lg", title = 'Este card apresenta o número de transaçãoes realizadas bem como o ticket médio no período selecionada. A variação percentual em relação ao período anterior também é indicada, permitindo avaliar se houve um aumento ou redução no número de transações e no ticket médio.'
+                               ' Caso o card apresente a cor vermelha, significa que houve uma variação negativa em relação ao período anterior. Se apresentar a cor verde, indica uma variação positiva e, caso fique amarelo, não houve variação significativa.', 
+                               style = {'position': 'absolute', 'right': '0', 'top': '0', 'color':'white'}),
+                    ], style = {'display':'flex', 'justify-content':'space-between'}
+                    ),
+                    
                     html.Div([
                         html.P(id = 'quantidadeVendas', children = [],
                            style={'color': 'white', 'font-size': '22px', 'display': 'inline-block', 'width': '50%'}), # número de vendas
@@ -633,7 +651,8 @@ card_numerovendas = dbc.Card(id = 'card-quantidadeVendas', children=[
                     ])
                     
                 ])
-            )
+            ),
+
         ], style = {'width': '19rem', "fontFamily": fonte, 'box-shadow': '3px 3px 10px 2px rgba(0, 0, 0, 0.2)'}
         )
 
@@ -646,7 +665,16 @@ card_faturamento = dbc.Card(id = 'card-faturamento-style', children=[
             ),
             dbc.CardImgOverlay(
                 dbc.CardBody([
-                    html.H4("Faturamento", style = {'color': 'white', 'fontWeight': 'bold'}),
+
+                    html.Div([
+                        html.H4("Faturamento", style = {'color': 'white', 'fontWeight': 'bold'}),
+                        # Definindo o ícone info com a descrição do card
+                        html.I(className="bi bi-info-lg", title = 'Este card apresenta o faturamento em reais durante o período selecionado. Além disso, é possível visualizar a variação em relação ao período anterior, permitindo uma análise da evolução do faturamento ao longo do tempo.'
+                               ' Caso o card apresente a cor vermelha, significa que houve uma variação negativa em relação ao período anterior. Se apresentar a cor verde, indica uma variação positiva e, caso fique amarelo, não houve variação significativa.', 
+                               style = {'position': 'absolute', 'right': '0', 'top': '0', 'color':'white'}),
+                    ], style = {'display':'flex', 'justify-content':'space-between'}
+                    ),
+                    
                     html.Div([
                         html.P(id = 'faturamento', children = [],
                            style={'color': 'white', 'font-size': '22px', 'width': '100%', 'margin': '0'}), # Faturamento
@@ -669,7 +697,16 @@ card_despesas = dbc.Card(id = 'card-despesas-style', children=[
             ),
             dbc.CardImgOverlay(
                 dbc.CardBody([
-                    html.H4("Gastos", style = {'color': 'white', 'fontWeight': 'bold'}),
+
+                    html.Div([
+                        html.H4("Gastos", style = {'color': 'white', 'fontWeight': 'bold'}),
+                        # Definindo o ícone info com a descrição do card
+                        html.I(className="bi bi-info-lg", title = 'Este card exibe o valor total, em reais, dos gastos realizados no período selecionado, bem como a variação em relação ao período anterior.'
+                               ' Caso o card apresente a cor vermelha, significa que houve uma variação negativa em relação ao período anterior. Se apresentar a cor verde, indica uma variação positiva e, caso fique amarelo, não houve variação significativa.', 
+                               style = {'position': 'absolute', 'right': '0', 'top': '0', 'color':'white'}),
+                    ], style = {'display':'flex', 'justify-content':'space-between'}
+                    ),
+
                     html.Div([
                         html.P(id = 'despesas', children = [],
                            style={'color': 'white', 'font-size': '22px', 'width': '100%', 'margin': '0'}), # Despesas
@@ -692,7 +729,16 @@ card_resultado = dbc.Card(id = 'card-resultado-style', children=[
             ),
             dbc.CardImgOverlay(
                 dbc.CardBody([
-                    html.H4("Resultado", style = {'color': 'white', 'fontWeight': 'bold'}),
+
+                    html.Div([
+                        html.H4("Resultado", style = {'color': 'white', 'fontWeight': 'bold'}),
+                        # Definindo o ícone info com a descrição do card
+                        html.I(className="bi bi-info-lg", title = 'Este card apresenta o valor total, em reais, da diferença entre o faturamento e os gastos dispendidos no período selecionado. Além disso, é possível visualizar a variação percentual desse resultado em relação ao período anterior.'
+                               ' Caso o card apresente a cor vermelha, significa que houve uma variação negativa em relação ao período anterior. Se apresentar a cor verde, indica uma variação positiva e, caso fique amarelo, não houve variação significativa.', 
+                               style = {'position': 'absolute', 'right': '0', 'top': '0', 'color':'white'}),
+                    ], style = {'display':'flex', 'justify-content':'space-between'}
+                    ),                    
+                    
                     html.Div([
                         html.P(id = 'resultado', children = [],
                            style={'color': 'white', 'font-size': '22px', 'width': '100%', 'margin': '0'}), # Resultado
@@ -822,49 +868,70 @@ layout = html.Div(
         html.P(),
         html.Hr(),
 
+        # Gráfico do breakeven
         html.Div([
+            
             dcc.Graph(id='faturamento_despesas', style={'background-color': '#f5f5f5',
-                                                'margin-top':'30px', 'margin-left':'10px',
-                                                'margin-right':'10px',
-                                                'box-shadow': '3px 3px 10px 2px rgba(0, 0, 0, 0.2)',
-                                                'width': '99%'
-                                                }
+                                            'margin-top':'30px', 'margin-left':'10px',
+                                            'margin-right':'10px',
+                                            'box-shadow': '3px 3px 10px 2px rgba(0, 0, 0, 0.2)',
+                                            'width': '99%',
+                                            }
             ),
+        
+            html.I(className="bi bi-info-lg", title = 'Este gráfico exibe o faturamento e os gastos em relação ao período selecionado, permitindo uma análise visual do ponto de equilíbrio (Breakeven).', 
+                   style = {'position': 'absolute', 'right': '0.8', 'top': '0', 'margin-left':'17px', 'margin-top':'10px'}),
 
-        ], style={'display':'flex', 'justify-content': 'center'}),
+        ], style={'position':'relative'}),
 
-
+        # Div gráfico de fauramento, gastos e resultado
         html.Div([
-    
-            dcc.Graph(id = 'barras_resultado', style={'margin-top':'30px', 'margin-left':'10px',
-                                                'margin-right':'10px',
-                                                'width':'63%',
-                                                'box-shadow': '3px 3px 10px 2px rgba(0, 0, 0, 0.2)',
-                                                }),
+            # Barras sobrepostas
+            html.Div([
 
-            dcc.Graph(id = 'pie_despesas', style={'margin-top':'30px', 'margin-right':'10px',
-                                                'margin-left':'30px',
-                                                'width':'33%',
-                                                'box-shadow': '3px 3px 10px 2px rgba(0, 0, 0, 0.2)',
-                                                }
-            )
+                dcc.Graph(id = 'barras_resultado', style={'box-shadow': '3px 3px 10px 2px rgba(0, 0, 0, 0.2)'}),
+                
+                html.I(className="bi bi-info-lg", title = 'Este gráfico de barras sobrepostas demonstra a relação entre o faturamento, gastos e o resultado (diferença entre faturamento e gastos) durante o período selecionado, permitindo uma análise visual da contribuição de cada componente para o resultado geral.', 
+                                style = {'position': 'absolute', 'right': '1', 'top': '0', 'margin-left':'10px', 'margin-top':'10px'}),
+
+            ], style={'position':'relative', 'width':'63%', 'margin-top':'30px', 'margin-left':'8px', 'margin-right':'10px'}
+            ),
+            # Explosão solar
+            html.Div([
+
+                dcc.Graph(id = 'pie_despesas', style={'box-shadow': '3px 3px 10px 2px rgba(0, 0, 0, 0.2)'}),
+
+                html.I(className="bi bi-info-lg", title = 'Este gráfico Sunburst exibe a relação entre os departamentos, tipos de gastos e seus respectivos valores durante um período selecionado, permitindo uma análise visual da distribuição de gastos. Clique em um departamento específico para visualizar mais detalhes sobre os tipos de gastos relacionados a ele.', 
+                                style = {'position': 'absolute', 'right': '1', 'top': '0', 'margin-left':'10px', 'margin-top':'10px'}),
+
+            ], style={'position':'relative', 'width':'33%', 'margin-top':'30px', 'margin-left':'30px', 'margin-right':'10px'}
+            ),
+            
         ], style = {'display': 'flex', 'justify-content':'center'}),
-
+        
+        # Div mapa
         html.Div([
-            dcc.Graph(id='mapa_grafico', style={'background-color': '#f5f5f5',
-                                                'margin-top':'30px', 'margin-left':'10px',
-                                                'margin-right':'10px',
-                                                'width':'63%',
-                                                'box-shadow': '3px 3px 10px 2px rgba(0, 0, 0, 0.2)',
-                                                }
-            ),
-            dcc.Graph(id = 'pie-chart-mapa', style={'background-color': '#2C3E50',
-                                                'margin-top':'30px', 'margin-right':'10px',
-                                                'margin-left':'30px',
-                                                'width':'33%',
-                                                'box-shadow': '3px 3px 10px 2px rgba(0, 0, 0, 0.2)',
-                                                }
-            )
+            # Mapa do mundo
+            html.Div([
+
+                dcc.Graph(id='mapa_grafico', style={'box-shadow': '3px 3px 10px 2px rgba(0, 0, 0, 0.2)'}),
+              
+                html.I(className="bi bi-info-lg", title = 'Este mapa exibe o volume transacionado por estado brasileiro durante um determinado período, permitindo uma análise visual da distribuição geográfica das transações. Passe o mouse sobre os Estados para visualizar mais detalhes. Com scroll do mouse, é possível aumentar ou diminuir o nível de detalhamento do mapa e, ao clicar e arrastar o mapa, poderá explorar diferentes regiões do mundo.', 
+                                style = {'position': 'absolute', 'right': '1', 'top': '0', 'margin-left':'10px', 'margin-top':'10px'}),
+
+            ], style={'position':'relative', 'width':'63%', 'margin-top':'30px', 'margin-left':'10px', 'margin-right':'10px', 'background-color': 'white'}
+            ),  
+            
+            # Mapa de calor de gráfico de pizza
+            html.Div([
+
+                dcc.Graph(id = 'pie-chart-mapa', style={'box-shadow': '3px 3px 10px 2px rgba(0, 0, 0, 0.2)'}),
+                         
+                html.I(className="bi bi-info-lg", title = 'Este gráfico de pizza mostra a distribuição da quantidade de produtos vendidos por código de produto. Utilize o mapa de calor logo abaixo para visualizar a distribuição geográfica dos produtos vendidos.', 
+                                style = {'position': 'absolute', 'right': '1', 'top': '0', 'margin-left':'10px', 'margin-top':'10px'}),
+
+            ], style={'position':'relative', 'width':'33%', 'margin-top':'30px', 'margin-left':'30px', 'margin-right':'10px', 'background-color': 'white'}
+            ),  
 
         ], style={'display': 'flex', 'justify-content': 'center', 'width': '100%'}
         ),
@@ -872,19 +939,25 @@ layout = html.Div(
         # Análise Coorte
         html.Div([
             
-            dcc.Graph(id = 'atividade-clientes', style = {'background-color': '#2C3E50',
-                                                            'margin-top':'30px', 'margin-right':'10px',
-                                                            'margin-left':'10px',
-                                                            'width':'51%',
-                                                            'box-shadow': '3px 3px 10px 2px rgba(0, 0, 0, 0.2)'}),
+            html.Div([
 
-            dcc.Graph(id = 'coorte', style = {'background-color': '#2C3E50',
-                                                'margin-top':'30px', 'margin-right':'10px',
-                                                'margin-left':'30px',
-                                                'box-shadow': '3px 3px 10px 2px rgba(0, 0, 0, 0.2)',
-                                                'width': '45%'}),
-                            
-            
+                dcc.Graph(id = 'atividade-clientes', style = {'height':'100%', 'box-shadow': '3px 3px 10px 2px rgba(0, 0, 0, 0.2)'}),
+                         
+                html.I(className="bi bi-info-lg", title = 'Através deste gráfico de linha, é possível visualizar a variação da quantidade de clientes que compraram ao longo do tempo de acordo com o período selecionado.', 
+                                style = {'position': 'absolute', 'right': '1', 'top': '0', 'margin-left':'10px', 'margin-top':'10px'}),
+
+            ], style={'position':'relative', 'width':'51%', 'margin-top':'30px', 'margin-left':'10px', 'margin-right':'10px', 'background-color': 'white'}
+            ),  
+
+            html.Div([
+
+                dcc.Graph(id = 'coorte', style = {'box-shadow': '3px 3px 10px 2px rgba(0, 0, 0, 0.2)', 'height':'100%'}),
+                         
+                html.I(className="bi bi-info-lg", title = 'Esta análise de coorte permite entender o comportamento dos clientes ao longo do tempo, mostrando quantos deles permaneceram ativos e quantos foram perdidos, bem como a sua recorrência de compra.', 
+                                style = {'position': 'absolute', 'right': '1', 'top': '0', 'margin-left':'10px', 'margin-top':'10px'}),
+
+            ], style={'position':'relative', 'width':'45%', 'margin-top':'30px', 'margin-left':'30px', 'margin-right':'10px', 'background-color': 'white'}
+            ), 
 
         ], style={'display': 'flex', 'justify-content': 'center', 'width': '100%', 'height':'33rem'}
         ),
@@ -908,6 +981,7 @@ layout = html.Div(
                 html.Div([
                     html.H1(children = ['To do list\xa0'], style={'color': 'white', "fontFamily": fonte, 'margin-top':'50px', 'margin-left':'20px'}),
                     html.I(className = "bi bi-check-all", style={'font-size':'3.5rem', 'margin-top':'40px', 'color':'white'}),
+                    html.I(className = "bi bi-info-lg", title = 'Aqui você poderá adicionar novas tarefas selecionando a data, preenchendo o input e clicando em "Add tarefa". As atividades concluídas aparecem em verde, as atividades atrasadas aparecem em vermelho e as atividades pendentes aparecem em laranja. Em caso de tarefas atrasadas, um e-mail de lembrete será enviado para o e-mail cadastrado.', style={'margin-top':'50px', 'color':'white', 'margin-left':'5px'}),
                 ], style={'display':'flex'}
                 ),
                         
@@ -930,7 +1004,7 @@ layout = html.Div(
             html.Div([
         
                 # Botão de adicionar tarefa
-                dbc.Button('Add tarefa', id="add-task", className="bi bi-plus-lg",  
+                dbc.Button('\xa0Add tarefa', id="add-task", className="bi bi-plus-lg",  
                     color = 'info', outline = True, n_clicks=None, size= 'sm',
                     style={'margin':'10px', 'width': '15%'}),
 
@@ -961,10 +1035,14 @@ layout = html.Div(
             }
         ),
 
-        dcc.Graph(id= 'grafico-ToDo', style={'width':'33%', 'background-color': 'white', 
-                'box-shadow': '3px 3px 10px 2px rgba(0, 0, 0, 0.2)',
-                'margin-top':'30px', 'margin-left':'30px', 'margin-right':'10px'})
+        html.Div([
+            dcc.Graph(id= 'grafico-ToDo', style={'box-shadow': '3px 3px 10px 2px rgba(0, 0, 0, 0.2)', 'height':'100%'}),
+
+            html.I(className = "bi bi-info-lg", title = 'Este gráfico de pizza mostra a distribuição dos status das tarefas, representando em verde as atividades concluídas, em vermelho as tarefas atrasadas e em laranja as pendentes.',
+                   style={'position':'absolute', 'right':'1', 'top':'0', 'margin-left':'10px', 'margin-top':'10px'})   
         
+        ], style={'position':'relative', 'width':'33%', 'background-color': 'white', 'margin-top':'30px', 'margin-left':'30px', 'margin-right':'10px'}
+        )
 
     ], style={'display':'flex', 'justify-content': 'center'}
     ),
@@ -1121,7 +1199,7 @@ def carregar_output(intervalo, ano, mes, mes_aux, n_ano, n_mes, n_mes_total, ano
 
 
 
-# Callback para gerar as opçãoes de ano de acordo com a tabela vendas
+# Callback para gerar as opçãoes de ano
 @callback(
     Output('filtro-ano', 'children'),
     Input('interval-component', 'interval')
@@ -1137,7 +1215,7 @@ def atualizar_opcoes_ano(n):
     return children_anos
 
 
-
+# Callback para gerar as opçãoes de mês
 @callback(
     Output('filtro-mes', 'children'),
     Input({'type': 'ano-dropdown', 'index': ALL}, 'n_clicks'),
@@ -1262,7 +1340,7 @@ def func_coorte(ano):
             z=churn.T.values,  # Dados da tabela pivoteada
             #x=churn.T.columns.tolist(),  # Nomes das colunas
             #y=churn.T.index.tolist(),  # Nomes das linhas
-            colorscale='RdBu',  # Esquema de cores
+            colorscale='RdBu_r',  # Esquema de cores
             showlegend = False,
             showscale=True,
             hovertemplate = 'Atividade: %{z:.2%}<br>Data: %{y}',
@@ -1292,7 +1370,9 @@ def func_coorte(ano):
 
         title={
             'text': 'Atividade dos clientes',
-            'font': {'size': 24, 'family': 'Poppins, sans-serif'}
+            'font': {'size': 24, 'family': 'Poppins, sans-serif'},
+            'y': 0.92, # Ajustando o titulo verticalmente
+            'x': 0.06  # Ajustando o titulo horizontalmente
         },
     )
 
@@ -1313,19 +1393,22 @@ def func_coorte(ano):
     coorte.set_index(['coorte_periodo'], inplace = True)
 
     # Definindo o gráfico
-    fig_line = px.line(coorte, x = 'coorte', y = 'total_clientes')
+    fig_line = px.line(coorte, x = 'coorte', y = 'total_clientes', labels={'total_clientes': 'Total de clientes', 'coorte':'Data'})
 
     # Editando o gráfico
     fig_line.update_layout(
         template='plotly_white',
         title={
             'text': 'Atividade dos clientes',
-            'font': {'size': 24, 'family': 'Poppins, sans-serif'}
+            'font': {'size': 24, 'family': 'Poppins, sans-serif'},
+            'y': 0.925, # Ajustando o título do gráfico na vertical
+            'x': 0.05  # Ajustando o título do gráfico na horizontal
         },
         xaxis_title='Data',
         yaxis_title='Quantidade de clientes', 
-        
+        margin=dict(l=80, r=40, t=80, b=100)
     )
+
     # Editando o eixo x
     fig_line.update_xaxes(showgrid=True, gridcolor='lightgray', tickangle=45, title_font=dict(size=16, family='Poppins, sans-serif'))
     # Editando o eixo y
@@ -1336,7 +1419,7 @@ def func_coorte(ano):
 
     return fig, fig_line
 
-# Callback para o grafico de barras empilhado e pizza das despesas
+# Callback para o grafico de barras sobreposto e explosão solar das despesas
 @callback(
     Output('barras_resultado', 'figure'),
     Output('pie_despesas', 'figure'),
@@ -1373,11 +1456,11 @@ def bar_pie_graph(ano):
 
     # Definindo o DataFrame do resultado 
     # Vamos agrupar os dados de faturamento e despesas
-    resultado = pd.merge(faturamento, despesas, on='Data', how='outer', suffixes=('Faturamento', 'Despesas'))
+    resultado = pd.merge(faturamento, despesas, on='Data', how='outer', suffixes=('Faturamento', 'Gastos'))
     resultado.fillna(0, inplace = True) # Atribuindo valor 0 para os dados que estão 0 no data Frame
     # Agora calcularemos a diferença de acorod com a data entre a coluna faturamento e a coluna despesa. Para tal criei uma coluna chamada 'diferença' para armazenar os dados
-    resultado['Diferença'] = resultado['Valor (R$)Faturamento'] - resultado['Valor (R$)Despesas']
-    resultado['Valor (R$)Despesas'] = resultado['Valor (R$)Despesas']*-1
+    resultado['Diferença'] = resultado['Valor (R$)Faturamento'] - resultado['Valor (R$)Gastos']
+    resultado['Valor (R$)Gastos'] = resultado['Valor (R$)Gastos']*-1
     resultado['Data'] = pd.to_datetime(resultado['Data'])
     resultado['Data'] = resultado['Data'].apply(lambda x: x.strftime('%b-%Y'))# Para tratar Data e mostrar apenas o mês abreviado
     
@@ -1388,15 +1471,15 @@ def bar_pie_graph(ano):
 
     # Dados Faturamento
     fig_bar.add_trace(
-        go.Bar(x = resultado['Data'], y = resultado['Valor (R$)Faturamento'], offset=0, name='Faturamento', marker_color='#84909C')
+        go.Bar(x = resultado['Data'], y = resultado['Valor (R$)Faturamento'], offset=0, name='Faturamento', marker_color='#84909C', hovertemplate='Data: %{x}<br>Faturamento: R$ %{y:,.2f}')
     )
     # Dados Despesas
     fig_bar.add_trace(
-       go.Bar(x=resultado['Data'], y=resultado['Valor (R$)Despesas'], offset=0, name='Despesas', marker_color='#E74C3C') 
+       go.Bar(x=resultado['Data'], y=resultado['Valor (R$)Gastos'], offset=0, name='Gastos', marker_color='#E74C3C', hovertemplate='Data: %{x}<br>Gastos: R$ %{y:,.2f}') 
     )
     # Dados Diferença
     fig_bar.add_trace(
-       go.Bar(x=resultado['Data'], y=resultado['Diferença'], offset=0, name='Resultado', marker_color='#31729C') 
+       go.Bar(x=resultado['Data'], y=resultado['Diferença'], offset=0, name='Resultado', marker_color='#31729C', hovertemplate='Data: %{x}<br>Resultado: R$ %{y:,.2f}') 
     )
 
     # Editando o gráfico
@@ -1420,12 +1503,11 @@ def bar_pie_graph(ano):
 
     fig_pie = px.pie()
 
-    print(len(df_despesas))
     if len(df_despesas) > 0:
 
         # Criando o gráfico de despesas por departamento 
-        fig_pie = px.sunburst(df_despesas, path=['Departamento', 'Tipo de despesa'], 
-                            color_continuous_scale='RdBu', values='Valor (R$)', 
+        fig_pie = px.sunburst(df_despesas, path=['Departamento', 'Tipo de gasto'], 
+                            color_continuous_scale='RdBu_r', values='Valor (R$)', 
                             color='Valor (R$)',
                     )
     
@@ -1434,11 +1516,13 @@ def bar_pie_graph(ano):
             title={
                 'text': 'Tipos de gastos',
                 'font': {'size': 22, 'family': 'Poppins, sans-serif'},
+                'y': 0.92,  # Ajustando o título do gráfico para ficar mais para baixo
+                'x': 0.08    # Ajustando o título do gráfico para ficar mais para a direita
             },
 
             template='plotly_white', # Estilo templete
 
-            margin=dict(t=50, l=70, r=80, b=60),
+            margin=dict(t=70, l=70, r=80, b=60),
 
             legend=dict(
                 font=dict(
@@ -1448,6 +1532,14 @@ def bar_pie_graph(ano):
             ),
             
         )
+
+        # Ajustando a legenda
+        fig_pie.update_traces(
+            hovertemplate='<b>%{label}:</b> R$ %{value:,.2f}',  # Texto do hover com duas casas decimais
+            textfont=dict(size=12),  # Tamanho da fonte do texto da legenda
+            insidetextorientation='radial',  # Orientação do texto na legenda
+        )
+
 
 
     return fig_bar, fig_pie
@@ -1498,8 +1590,6 @@ def update_todolist(delete, n_task, n_calender, store_children, interval, lista_
     else:
        
         store_children = children
-
-    #fig, _ = pie_ToDo(children)
 
     # Obtenha o id do ano selecionado no filtro-ano
     triggered_id = dash.callback_context.triggered[0]['prop_id'].split('.')[0]
@@ -1651,8 +1741,12 @@ def enviar_email(_, data, ultimo_envio, atraso, tamanho_passado):
             ultimo_envio = dt.today()
             tamanho_passado = atraso
             enviar_alerta('Atividade atrasada',
-               f'Você possui {atraso} em atraso. '
-               f'Por favor, verifique as suas tarefas no Dashboard Financeiro',
+               f'Este é um lembrete amigável de que você possui {atraso} tarefas em atraso no StartChart. '
+               f'Por favor, verifique as tarefas pendentes e conclua-as assim que possível. '
+               f'\nLembre-se de que as tarefas em atraso podem afetar o desempenho geral da empresa.'
+               f'\n'
+               f'\nCordialmente,'
+               f'\nStartChart',
                'reiskayron@gmail.com') 
             
         return dash.no_update, ultimo_envio, tamanho_passado 
