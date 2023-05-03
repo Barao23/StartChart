@@ -331,7 +331,7 @@ def card_res(df, df_despesas, ano, mes, filtro='mes'):
         else:
             var_resultado = '{:,.2f}% no prejuízo'.format(var_resultado)
 
-    return card_result, resultado, var_resultado, style_var_resultado
+    return card_result, resultado
 
 
 #Para usar a base de dados dos estados brasileiros vamos abrir o banco de dados através de um webscraping
@@ -733,7 +733,7 @@ card_resultado = dbc.Card(id = 'card-resultado-style', children=[
                     html.Div([
                         html.H4("Resultado", style = {'color': 'white', 'fontWeight': 'bold'}),
                         # Definindo o ícone info com a descrição do card
-                        html.I(className="bi bi-info-lg", title = 'Este card apresenta o valor total, em reais, da diferença entre o faturamento e os gastos dispendidos no período selecionado. Além disso, é possível visualizar a variação percentual desse resultado em relação ao período anterior.'
+                        html.I(className="bi bi-info-lg", title = 'Este card apresenta o valor total, em reais, da diferença entre o faturamento e os gastos dispendidos no período selecionado.'
                                ' Caso o card apresente a cor vermelha, significa que houve uma variação negativa em relação ao período anterior. Se apresentar a cor verde, indica uma variação positiva e, caso fique amarelo, não houve variação significativa.', 
                                style = {'position': 'absolute', 'right': '0', 'top': '0', 'color':'white'}),
                     ], style = {'display':'flex', 'justify-content':'space-between'}
@@ -742,9 +742,6 @@ card_resultado = dbc.Card(id = 'card-resultado-style', children=[
                     html.Div([
                         html.P(id = 'resultado', children = [],
                            style={'color': 'white', 'font-size': '22px', 'width': '100%', 'margin': '0'}), # Resultado
-        
-                        html.I(id = 'variacao-resultado', style={'color': 'white', 'font-size': '12px', 'margin': '0px', 
-                                                                 'width': '35%', 'fontWeight': 'bold','margin-top':'0'})  #Variação percentual
                     ])
                     
                 ])
@@ -825,10 +822,14 @@ layout = html.Div(
                 dbc.ModalHeader(dbc.ModalTitle("Dúvida",  style ={'font-family': fonte, 'color': 'white', 'fontWeight': 'bold'}), 
                                 style = {'background-color': '#2C3E50'}),
                                 
-                dbc.ModalBody("A partir desta ferramente, você poderá analisar dados financeiros."
-                    " Para começar, basta navegar para a página *VENDAS ou *DESPESAS e carregar os dados"
-                    " a serem analisados."
-                    " Em cada uma das páginas você irá encontrar um modelo de análise para download", 
+                dbc.ModalBody(
+                [
+                    "Com esta ferramenta, você terá a capacidade de analisar dados de forma mais eficiente. Para iniciar, basta acessar a seção de Vendas e Gastos e fazer o upload dos dados que deseja analisar. Assim que o upload for concluído, você poderá visualizar os gráficos gerados pelo StartChart, que irão ajudá-lo a entender e interpretar os dados de forma clara e objetiva. Com essas informações, você poderá tomar decisões assertivas e planejar as melhores estratégias para a sua empresa, maximizando o seu potencial de crescimento e sucesso.",
+                    
+                    html.P(),
+
+                    html.Iframe(src='https://youtu.be/PfoOMd-yqOI', width = '100%', height='250', style = {'margin-top': '20px'})
+                ], 
                     style={'color':'black', 'text-align': 'justify', 'text-justify': 'inter-word',
                            'font-family': fonte}
                 ),
@@ -1098,8 +1099,6 @@ def pop_up(n1, n2, estado):
         Output('variacao-despesas', 'className'),
         Output('card-resultado-style', 'className'),
         Output('resultado', 'children'),
-        Output('variacao-resultado', 'children'),
-        Output('variacao-resultado', 'className'),
         Output('store_ano', 'data'),
         Output('store_mes', 'data'),
         Output('store_mes-aux', 'data'),
@@ -1135,7 +1134,7 @@ def carregar_output(intervalo, ano, mes, mes_aux, n_ano, n_mes, n_mes_total, ano
         
         noupdate = dash.no_update
 
-        return noupdate, noupdate, noupdate, noupdate, noupdate, noupdate, noupdate, noupdate, noupdate, noupdate, noupdate, noupdate, noupdate, noupdate, noupdate, noupdate, noupdate, noupdate, noupdate, ano, noupdate, noupdate, noupdate, noupdate, noupdate
+        return noupdate, noupdate, noupdate, noupdate, noupdate, noupdate, noupdate, noupdate, noupdate, noupdate, noupdate, noupdate, noupdate, noupdate, noupdate, noupdate, noupdate, ano, noupdate, noupdate, noupdate, noupdate, noupdate
     
     if input_id['type'] == 'mes-dropdown':
         opcoes_mes = gerar_opcoes_mes(ano)
@@ -1158,7 +1157,7 @@ def carregar_output(intervalo, ano, mes, mes_aux, n_ano, n_mes, n_mes_total, ano
         card_desp, desp, var_despesas, style_var_despesas = card_despesascard(df_despesa, ano, mes, filtro = 'ano')
 
         # CARD RESULTADO
-        card_result, result, var_resultado, style_var_resultado = card_res(df, df_despesa, ano, mes, filtro='ano')
+        card_result, result = card_res(df, df_despesa, ano, mes, filtro='ano')
        
         # Gráfico Faturamento X Despesas
         fig_fatdesp = fat_desp(df, df_despesa, ano, mes, filtro='ano')
@@ -1180,7 +1179,7 @@ def carregar_output(intervalo, ano, mes, mes_aux, n_ano, n_mes, n_mes_total, ano
         card_desp, desp, var_despesas, style_var_despesas = card_despesascard(df_despesa, ano, mes, filtro = 'mes')
         
         # CARD RESULTADO
-        card_result, result, var_resultado, style_var_resultado = card_res(df, df_despesa, ano, mes, filtro='mes')
+        card_result, result = card_res(df, df_despesa, ano, mes, filtro='mes')
         
         # Gráfico Faturamento X Despesas
         fig_fatdesp = fat_desp(df, df_despesa, ano, mes, filtro='mes')
@@ -1192,10 +1191,7 @@ def carregar_output(intervalo, ano, mes, mes_aux, n_ano, n_mes, n_mes_total, ano
         fig_pie_map = pie_chart_mapa(df, ano, mes, filtro='mes')
 
 
-    print('ano analisado {}'.format(ano))
-    print('mes analisado {}'.format(mes))
-
-    return x, num_vendas, var_nunvendas, style_var_nunvendas, ticket_medio, variacao_ticket, style_varticket, card_fatur, fatur, var_fatur, style_var_fatur, card_desp, desp, var_despesas, style_var_despesas, card_result, result, var_resultado, style_var_resultado, ano, mes, mes_aux, fig_fatdesp, fig_mapa, fig_pie_map
+    return x, num_vendas, var_nunvendas, style_var_nunvendas, ticket_medio, variacao_ticket, style_varticket, card_fatur, fatur, var_fatur, style_var_fatur, card_desp, desp, var_despesas, style_var_despesas, card_result, result, ano, mes, mes_aux, fig_fatdesp, fig_mapa, fig_pie_map
 
 
 
