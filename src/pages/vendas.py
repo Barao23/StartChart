@@ -138,9 +138,9 @@ layout = html.Div([
         dbc.Row([
 
             dbc.Button(
-            " \xa0 Download Modelo", color="primary", id = "click-despesas-modelo-csv",
+            " \xa0 Download Modelo", color="primary", id = "click-vendas-modelo-csv",
             outline = False, className="bi bi-download"),
-            dcc.Download(id="despesas-csv"),
+            dcc.Download(id="vendas-csv"),
 
         ], style = {'margin-top':'30px', 'margin-right': '15px'})
 
