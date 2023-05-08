@@ -76,13 +76,21 @@ layout = html.Div([
                 dbc.ModalTitle("Dúvida", style={'color': 'white', 'fontWeight': 'bold'}),
             ], style={'background-color': '#2C3E50'}
             ),
-            dbc.ModalBody("Para começar, clique em 'Selecionar Arquivo' ou arraste um arquivo para a área 'Arraste e Solte' abaixo. Em seguida, uma tabela será exibida, permitindo que você a filtre e organize conforme necessário. Depois, clique em 'Novo Gráfico' para criar um gráfico interativo para o seu dashboard. Selecione o tipo de gráfico e escolha os dados para os eixos X e Y",
-                style={'font-family': fonte, 'color': 'black', 'text-align': 'justify', 'text-justify': 'inter-word'}),
+            
+            dbc.ModalBody([
+                "Para começar a utilizar o StartChart, primeiro carregue um arquivo na área de upload. Certifique-se de que o arquivo esteja no formato .xlsx e que siga o modelo disponível para download.  Após carregar o arquivo, você verá uma tabela na tela. Você pode adicionar filtros, novas linhas clicando em 'Adicionar Linha' ou apagar linhas existentes clicando no 'X' localizado no canto esquerdo de cada linha. Para apagar a tabela inteira, clique em 'Apagar tabela'. Para exportar um documento .xlsx, clique em 'Baixar Tabela'. Lembre-se de salvar todas as alterações clicando em 'Salvar Alterações'. Para criar um gráfico interativo no StartChart, clique em 'Novo Gráfico' e selecione o tipo de gráfico desejado e escolha os dados para compor o eixo X e Y.",      
+                
+                html.P(),
+
+                html.Iframe(src='https://www.youtube.com/embed/xblmZ4scYHI', width = '100%', height='250', allow = 'fullscreen', style = {'margin-top': '20px'})    
+            
+            ], style={'font-family': fonte, 'color': 'black', 'text-align': 'justify', 'text-justify': 'inter-word'}),
+         
             dbc.ModalFooter(
                 dbc.Button("Fechar", id="fechar", color='danger', n_clicks=0),
                 style={'background-color': 'white'}
             ),
-        ], id="pop-up-despesas", is_open=False
+        ], id="pop-up-despesas", is_open=False, centered=True, style={'width': '100%'}
         )
         ], style= {'width': '8%','display': 'inline-block', 'margin-top': '1vh',}
     ),
