@@ -168,54 +168,62 @@ layout = html.Div([
     
 
     html.P(""),
-    # Botão Salvar, Adicionar Linha e Gerar Base
-    dbc.Row([
-    dbc.Button(" \xa0 Salvar Alterações", color="success", id = "salvar-baseDespesas",
-        outline = False, className="bi bi-check2-square"),
-    ], style = {'width':'27vh', 'height':'3vh', 'margin-left':'0.1%', 'display': 'inline-block'}),
-    # Botão para adicionar linhas no banco de dados
-    dbc.Row([
-    dbc.Button(" \xa0 Adicionar Linha", color="info", id = "adicionarLinha-baseDespesas",
-        outline = False, className="bi bi-plus-square"),
-    ], style={'width':'27vh', 'height':'3vh', 'margin-left':'2%', 'display': 'inline-block'}),
-    # Botão para download da tabela:
-    dbc.Row([
-    dbc.Button(" \xa0 Baixar Tabela", color="warning", id = "gerar-tabela",
-        outline = False, className="bi bi-download"),
-    dcc.Download(id='download-tabela-despesas')
-    ], style={'width':'27vh', 'height':'3vh', 'margin-left':'2%', 'display': 'inline-block'}),
+
+    # Botão Salvar, Adicionar Linha e Gerar Base, Apagar Base
+    html.Div([
+        # Botão Salvar, Adicionar Linha e Gerar Base
+        html.Div([
+            # Botão Salvar
+            html.Div([
+                dbc.Button(" \xa0 Salvar Alterações", color="success", id = "salvar-baseDespesas", outline = False, className="bi bi-check2-square"),
+            ], style = {'padding':'10px'}),
+
+            # Botão para adicionar linhas
+            html.Div([
+                dbc.Button(" \xa0 Adicionar Linha", color="info", id = "adicionarLinha-baseDespesas", outline = False, className="bi bi-plus-square"),
+            ], style = {'padding':'10px'}),
+                
+            # Botão para download
+            html.Div([
+                dbc.Button(" \xa0 Baixar Tabela", color="warning", id = "gerar-tabela", outline = False, className="bi bi-download"),
+                dcc.Download(id='download-tabela-despesas')
+            ], style = {'padding':'10px'}),
+        ], style = {'display':'flex'}),
+
+        # Botão apagar
     
+        dbc.Row([
+            html.Div([
+                dbc.Button(" \xa0 Apagar tabela", id="abrir-apagar", color = 'danger', outline = False, n_clicks = 0, className="bi bi-trash3-fill"),
+            ], style = {'padding': '10px', 'margin-right':'20px'}),
+            
+            dbc.Modal([
+                dbc.ModalHeader([
+                    html.Div(de.Lottie(options=options, width="100%", height="100%", url = url, speed=0.8)),
+                    dbc.ModalTitle("Você tem certeza?", style={'color': 'black', 'fontWeight': 'bold', 'margin-top': '1vh'}),
+                    
+                ],  className='d-flex flex-column justify-content-center align-items-center',
+                    close_button=False,
+                    style={'background-color': 'white'}
+                ),
 
-    # Botão para adicionar linhas no banco de dados
-    dbc.Row([
-        dbc.Button(" \xa0 Apagar tabela", id="abrir-apagar", color = 'danger', outline = False,
-                   n_clicks = 0, className="bi bi-trash3-fill"),
-        dbc.Modal([
-            dbc.ModalHeader([
-                html.Div(de.Lottie(options=options, width="100%", height="100%", url = url, speed=0.8)),
-                dbc.ModalTitle("Você tem certeza?", style={'color': 'black', 'fontWeight': 'bold', 'margin-top': '1vh'}),
-                
-            ],  className='d-flex flex-column justify-content-center align-items-center',
-                close_button=False,
-                style={'background-color': 'white'}
+                dbc.ModalBody(
+                    "Você tem certeza de que deseja excluir os dados abaixo? Por favor, esteja ciente de que a exclusão será permanente e irreversível, o que pode afetar significativamente os resultados já apresentados no dashboard.",
+                    style={'color':'black', 'text-align': 'justify', 'text-justify': 'inter-word'}
+                ),
+
+                dbc.ModalFooter([
+                    # Botão de cancelar
+                    dbc.Button('Cancelar', id = 'cancelar-apagar', color = 'info', outline = False, n_clicks = 0),
+                    
+                    # Botão para confimar a exclusão da tabela
+                    dbc.Button('Apagar mesmo assim', id = 'apagar-baseDespesas', color = 'danger', outline = False),
+                ])
+            ], id="pop-up-apagar-despesas", is_open=False
             ),
+        ])
 
-            dbc.ModalBody(
-                "Você tem certeza de que deseja excluir os dados abaixo? Por favor, esteja ciente de que a exclusão será permanente e irreversível, o que pode afetar significativamente os resultados já apresentados no dashboard.",
-                style={'color':'black', 'text-align': 'justify', 'text-justify': 'inter-word'}
-            ),
-
-            dbc.ModalFooter([
-                # Botão de cancelar
-                dbc.Button('Cancelar', id = 'cancelar-apagar', color = 'info', outline = False, n_clicks = 0),
-                
-                # Botão para confimar a exclusão da tabela
-                dbc.Button('Apagar mesmo assim', id = 'apagar-baseDespesas', color = 'danger', outline = False),
-            ])
-        ], id="pop-up-apagar-despesas", is_open=False
-        ),
-    ], style={'width':'27vh', 'height':'3vh', 'margin-left':'44%', 'display': 'inline-block'}
-    ),
+    ], style = {'display': 'flex', 'justify-content':'space-between'}),
 
     #Div para exibir a mensagem de erro para o usuário 
     html.Div(
@@ -256,12 +264,26 @@ def upload(contents, filename, date):
         decoded = base64.b64decode(content_string)
         try:
             if 'csv' in filename:
-            # Assume that the user uploaded a CSV file
+            # Assume que o usuário carregou um arquivo CSV 
                 df = pd.read_csv(io.StringIO(decoded.decode('utf-8')))
+                # Converta a coluna de data para o tipo datetime
+                df['Data Pagamento'] = pd.to_datetime(df['Data Pagamento'])
+                df['Data Vencimento'] = pd.to_datetime(df['Data Vencimento'])
+                # Ajuste o formato da data para "2023-11-21"
+                df['Data Pagamento'] = df['Data Pagamento'].dt.strftime('%Y-%m-%d')
+                df['Data Vencimento'] = df['Data Vencimento'].dt.strftime('%Y-%m-%d')
+                               
                 dff = df.to_dict('records')
             elif 'xls' in filename:
-            # Assume that the user uploaded an excel file
+            # Assume que o usuário carregou um arquivo excel 
                 df = pd.read_excel(io.BytesIO(decoded))
+                # Converta a coluna de data para o tipo datetime
+                df['Data Pagamento'] = pd.to_datetime(df['Data Pagamento'])
+                df['Data Vencimento'] = pd.to_datetime(df['Data Vencimento'])
+                # Ajuste o formato da data para "2023-11-21"
+                df['Data Pagamento'] = df['Data Pagamento'].dt.strftime('%Y-%m-%d')
+                df['Data Vencimento'] = df['Data Vencimento'].dt.strftime('%Y-%m-%d')
+
                 dff = df.to_dict('records')
 
 
@@ -458,8 +480,15 @@ def adicionar_linha(n, linhas, columns):
     prevent_initial_call=True
 )
 def salvar_Mango(n, dados):
+    # Transformar para dataframe
+    dados_aux = pd.DataFrame(dados)
+    # Selecionar apenas as linhas que estão preenchidas
+    selecao = dados_aux != ''
+    dados_aux = dados_aux[selecao]
+    # Apagar as linhas que possuem ao menos um elemento em branco 
+    df = dados_aux.dropna()
+
     if n is not None:
-        df = pd.DataFrame(dados)
         doc_despesas.delete_many({})
         doc_despesas.insert_many(df.to_dict('records'))
     return ''

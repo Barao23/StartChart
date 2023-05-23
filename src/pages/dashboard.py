@@ -166,33 +166,33 @@ def card_numvendas(df, ano, mes, filtro='mes'):
     num_vendas_passado = selecao_passado['Quantidade'].count()
     if num_vendas_passado == 0:
         var_nunvendas = 'nan%'
-        x = 'border-start border-warning border-2' #Número de Transações
-        style_var_nunvendas = 'bi bi-dash text-warning bg-light rounded' # style sem variação
+        x = "" #Número de Transações
+        style_var_nunvendas = 'bi bi-dash text-warning bg-black bg-opacity-50 p-1 fw-bold rounded' # style sem variação
     else:
         var_nunvend = ((num_vendas-num_vendas_passado)/num_vendas_passado)*100
         if var_nunvend > 0:
-            x = 'border-start border-success border-2' #Número de Transações
-            style_var_nunvendas = 'bi bi-caret-up-fill text-success bg-light rounded' # style para variação positiva
+            x = '' #Número de Transações
+            style_var_nunvendas = 'bi bi-caret-up-fill text-success bg-black bg-opacity-50 p-1 fw-bold rounded' # style para variação positiva
         elif var_nunvend < 0:
-            x = 'border-start border-danger border-2' #Número de Transações
-            style_var_nunvendas = 'bi bi-caret-down-fill text-danger bg-light rounded' # style para variação negativa
+            x = '' #Número de Transações
+            style_var_nunvendas = 'bi bi-caret-down-fill text-danger bg-black bg-opacity-50 p-1 fw-bold rounded' # style para variação negativa
         else:
-            x = 'border-start border-warning border-2' #Número de Transações
-            style_var_nunvendas = 'bi bi-dash text-warning bg-light rounded' # style sem variação
+            x = '' #Número de Transações
+            style_var_nunvendas = 'bi bi-dash text-warning bg-black bg-opacity-50 p-1 fw-bold rounded' # style sem variação
         var_nunvendas = '{:,.2f}%'.format(var_nunvend)
 
     ticket_medio_passado = float(selecao_passado['Valor (R$)'].sum()/num_vendas_passado)
     if ticket_medio_passado == 0:
         variacao_ticket = 'nan%'
-        style_varticket = 'bi bi-caret-up-fill text-success bg-light rounded' # style para variação positiva
+        style_varticket = 'bi bi-caret-up-fill text-success bg-black bg-opacity-50 p-1 fw-bold rounded' # style para variação positiva
     else:
         variacao_tick = ((ticket_m - ticket_medio_passado)/ticket_medio_passado)*100
         if variacao_tick > 0:
-            style_varticket = 'bi bi-caret-up-fill text-success bg-light rounded' # style para variação positiva
+            style_varticket = 'bi bi-caret-up-fill text-success bg-black bg-opacity-50 p-1 fw-bold rounded' # style para variação positiva
         elif variacao_tick < 0:
-            style_varticket = 'bi bi-caret-down-fill text-danger bg-light rounded' # style para variação negativa
+            style_varticket = 'bi bi-caret-down-fill text-danger bg-black bg-opacity-50 p-1 fw-bold rounded' # style para variação negativa
         else:
-            style_varticket = 'bi bi-dash text-warning bg-light rounded' # style sem variação
+            style_varticket = 'bi bi-dash text-warning bg-black bg-opacity-50 p-1 fw-bold rounded' # style sem variação
         variacao_ticket = '{:,.2f}%'.format(variacao_tick)
     
     return x, num_vendas, var_nunvendas, style_var_nunvendas, ticket_medio, variacao_ticket, style_varticket
@@ -220,19 +220,19 @@ def card_faturamentocard(df, ano, mes, filtro='mes'):
     # Calculando a variação
     if faturamento_passado == 0:
         var_faturamento = 'nan%'
-        card_fatur = 'border-start border-warning border-2' #Faturamento
-        style_var_faturamento = 'bi bi-dash text-warning bg-light rounded' #style sem variação
+        card_fatur = '' #Faturamento
+        style_var_faturamento = 'bi bi-dash text-warning bg-black bg-opacity-50 p-1 fw-bold rounded' #style sem variação
     else:
         var_fatur = float((faturamento-faturamento_passado)/faturamento_passado)*100
         if var_fatur > 0:
-            card_fatur = 'border-start border-success border-2' #Faturamento
-            style_var_faturamento = 'bi bi-caret-up-fill text-success bg-light rounded' # style para variação positiva
+            card_fatur = '' #Faturamento
+            style_var_faturamento = 'bi bi-caret-up-fill text-success bg-black bg-opacity-50 p-1 fw-bold rounded' # style para variação positiva
         elif var_fatur < 0:
-            card_fatur = 'border-start border-danger border-2' #Faturamento
-            style_var_faturamento = 'bi bi-caret-down-fill text-danger bg-light rounded' # style para variação negativa
+            card_fatur = '' #Faturamento
+            style_var_faturamento = 'bi bi-caret-down-fill text-danger bg-black bg-opacity-50 p-1 fw-bold rounded' # style para variação negativa
         else:
-            card_fatur = 'border-start border-warning border-2' #Faturamento
-            style_var_faturamento = 'bi bi-dash text-warning bg-light rounded' # style sem variação
+            card_fatur = '' #Faturamento
+            style_var_faturamento = 'bi bi-dash text-warning bg-black bg-opacity-50 p-1 fw-bold rounded' # style sem variação
         var_faturamento = '{:,.2f}%'.format(var_fatur)
 
     
@@ -262,19 +262,19 @@ def card_despesascard(df, ano, mes, filtro='mes'):
     # Calculando a variação
     if despesas_passado == 0:
         var_despesas = 'nan%'
-        card_desp = 'border-start border-warning border-2' #Faturamento
-        style_var_despesas = 'bi bi-dash text-warning bg-light rounded' #style sem variação
+        card_desp = '' #Faturamento
+        style_var_despesas = 'bi bi-dash text-warning bg-black bg-opacity-50 p-1 fw-bold rounded' #style sem variação
     else:
         var_desp = float((despesas-despesas_passado)/despesas_passado)*100
         if var_desp > 0:
-            card_desp = 'border-start border-success border-2' #Faturamento
-            style_var_despesas = 'bi bi-caret-up-fill text-success bg-light rounded' # style para variação positiva
+            card_desp = '' #Faturamento
+            style_var_despesas = 'bi bi-caret-up-fill text-success bg-black bg-opacity-50 p-1 fw-bold rounded' # style para variação positiva
         elif var_desp < 0:
-            card_desp = 'border-start border-danger border-2' #Faturamento
-            style_var_despesas = 'bi bi-caret-down-fill text-danger bg-light rounded' # style para variação negativa
+            card_desp = '' #Faturamento
+            style_var_despesas = 'bi bi-caret-down-fill text-danger bg-black bg-opacity-50 p-1 fw-bold rounded' # style para variação negativa
         else:
-            card_desp = 'border-start border-warning border-2' #Faturamento
-            style_var_despesas = 'bi bi-dash text-warning bg-light rounded' # style sem variação
+            card_desp = '' #Faturamento
+            style_var_despesas = 'bi bi-dash text-warning bg-black bg-opacity-50 p-1 fw-bold rounded' # style sem variação
         var_despesas = '{:,.2f}%'.format(var_desp)
 
     
@@ -311,20 +311,20 @@ def card_res(df, df_despesas, ano, mes, filtro='mes'):
     # Calculando a variação
     if result_passado == 0:
         var_resultado = 'nan%'
-        card_result = 'border-start border-warning border-2' #Faturamento
-        style_var_resultado = 'bi bi-dash text-warning bg-light rounded' #style sem variação
+        card_result = '' #Faturamento
+        style_var_resultado = 'bi bi-dash text-warning bg-black bg-opacity-25 p-1 fw-bold rounded' #style sem variação
     else:
         var_resultado = float((result-abs(result_passado))/abs(result_passado))*100
         
         if var_resultado > 0:
-            card_result = 'border-start border-success border-2' #Faturamento
-            style_var_resultado = 'bi bi-caret-up-fill text-success bg-light rounded' # style para variação positiva
+            card_result = '' #Faturamento
+            style_var_resultado = 'bi bi-caret-up-fill text-success bg-black bg-opacity-25 p-1 fw-bold rounded' # style para variação positiva
         elif var_resultado < 0:
-            card_result = 'border-start border-danger border-2' #Faturamento
-            style_var_resultado = 'bi bi-caret-down-fill text-danger bg-light rounded' # style para variação negativa
+            card_result = '' #Faturamento
+            style_var_resultado = 'bi bi-caret-down-fill text-danger bg-black bg-opacity-25 p-1 fw-bold rounded' # style para variação negativa
         else:
-            card_result = 'border-start border-warning border-2' #Faturamento
-            style_var_resultado = 'bi bi-dash text-warning bg-light rounded' # style sem variação
+            card_result = '' #Faturamento
+            style_var_resultado = 'bi bi-dash text-warning bg-black bg-opacity-25 p-1 fw-bold rounded' # style sem variação
         
         if result_passado >= 0:
             var_resultado = '{:,.2f}% no lucro'.format(var_resultado)
