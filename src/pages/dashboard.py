@@ -167,32 +167,32 @@ def card_numvendas(df, ano, mes, filtro='mes'):
     if num_vendas_passado == 0:
         var_nunvendas = 'nan%'
         x = "" #Número de Transações
-        style_var_nunvendas = 'bi bi-dash text-warning bg-black bg-opacity-50 p-1 fw-bold rounded' # style sem variação
+        style_var_nunvendas = 'bi bi-dash text-warning bg-black bg-opacity-75 p-1 fw-bold rounded-pill' # style sem variação
     else:
         var_nunvend = ((num_vendas-num_vendas_passado)/num_vendas_passado)*100
         if var_nunvend > 0:
             x = '' #Número de Transações
-            style_var_nunvendas = 'bi bi-caret-up-fill text-success bg-black bg-opacity-50 p-1 fw-bold rounded' # style para variação positiva
+            style_var_nunvendas = 'bi bi-caret-up-fill text-success bg-black bg-opacity-75 p-1 fw-bold rounded-pill' # style para variação positiva
         elif var_nunvend < 0:
             x = '' #Número de Transações
-            style_var_nunvendas = 'bi bi-caret-down-fill text-danger bg-black bg-opacity-50 p-1 fw-bold rounded' # style para variação negativa
+            style_var_nunvendas = 'bi bi-caret-down-fill text-danger bg-black bg-opacity-75 p-1 fw-bold rounded-pill' # style para variação negativa
         else:
             x = '' #Número de Transações
-            style_var_nunvendas = 'bi bi-dash text-warning bg-black bg-opacity-50 p-1 fw-bold rounded' # style sem variação
+            style_var_nunvendas = 'bi bi-dash text-warning bg-black bg-opacity-75 p-1 fw-bold rounded-pill' # style sem variação
         var_nunvendas = '{:,.2f}%'.format(var_nunvend)
 
     ticket_medio_passado = float(selecao_passado['Valor (R$)'].sum()/num_vendas_passado)
     if ticket_medio_passado == 0:
         variacao_ticket = 'nan%'
-        style_varticket = 'bi bi-caret-up-fill text-success bg-black bg-opacity-50 p-1 fw-bold rounded' # style para variação positiva
+        style_varticket = 'bi bi-caret-up-fill text-success bg-black bg-opacity-75 p-1 fw-bold rounded-pill' # style para variação positiva
     else:
         variacao_tick = ((ticket_m - ticket_medio_passado)/ticket_medio_passado)*100
         if variacao_tick > 0:
-            style_varticket = 'bi bi-caret-up-fill text-success bg-black bg-opacity-50 p-1 fw-bold rounded' # style para variação positiva
+            style_varticket = 'bi bi-caret-up-fill text-success bg-black bg-opacity-75 p-1 fw-bold rounded-pill' # style para variação positiva
         elif variacao_tick < 0:
-            style_varticket = 'bi bi-caret-down-fill text-danger bg-black bg-opacity-50 p-1 fw-bold rounded' # style para variação negativa
+            style_varticket = 'bi bi-caret-down-fill text-danger bg-black bg-opacity-75 p-1 fw-bold rounded-pill' # style para variação negativa
         else:
-            style_varticket = 'bi bi-dash text-warning bg-black bg-opacity-50 p-1 fw-bold rounded' # style sem variação
+            style_varticket = 'bi bi-dash text-warning bg-black bg-opacity-75 p-1 fw-bold rounded-pill' # style sem variação
         variacao_ticket = '{:,.2f}%'.format(variacao_tick)
     
     return x, num_vendas, var_nunvendas, style_var_nunvendas, ticket_medio, variacao_ticket, style_varticket
@@ -221,18 +221,18 @@ def card_faturamentocard(df, ano, mes, filtro='mes'):
     if faturamento_passado == 0:
         var_faturamento = 'nan%'
         card_fatur = '' #Faturamento
-        style_var_faturamento = 'bi bi-dash text-warning bg-black bg-opacity-50 p-1 fw-bold rounded' #style sem variação
+        style_var_faturamento = 'bi bi-dash text-warning bg-black bg-opacity-75 p-1 fw-bold rounded-pill' #style sem variação
     else:
         var_fatur = float((faturamento-faturamento_passado)/faturamento_passado)*100
         if var_fatur > 0:
             card_fatur = '' #Faturamento
-            style_var_faturamento = 'bi bi-caret-up-fill text-success bg-black bg-opacity-50 p-1 fw-bold rounded' # style para variação positiva
+            style_var_faturamento = 'bi bi-caret-up-fill text-success bg-black bg-opacity-75 p-1 fw-bold rounded-pill' # style para variação positiva
         elif var_fatur < 0:
             card_fatur = '' #Faturamento
-            style_var_faturamento = 'bi bi-caret-down-fill text-danger bg-black bg-opacity-50 p-1 fw-bold rounded' # style para variação negativa
+            style_var_faturamento = 'bi bi-caret-down-fill text-danger bg-black bg-opacity-75 p-1 fw-bold rounded-pill' # style para variação negativa
         else:
             card_fatur = '' #Faturamento
-            style_var_faturamento = 'bi bi-dash text-warning bg-black bg-opacity-50 p-1 fw-bold rounded' # style sem variação
+            style_var_faturamento = 'bi bi-dash text-warning bg-black bg-opacity-75 p-1 fw-bold rounded-pill' # style sem variação
         var_faturamento = '{:,.2f}%'.format(var_fatur)
 
     
@@ -263,18 +263,18 @@ def card_despesascard(df, ano, mes, filtro='mes'):
     if despesas_passado == 0:
         var_despesas = 'nan%'
         card_desp = '' #Faturamento
-        style_var_despesas = 'bi bi-dash text-warning bg-black bg-opacity-50 p-1 fw-bold rounded' #style sem variação
+        style_var_despesas = 'bi bi-dash text-warning bg-black bg-opacity-75 p-1 fw-bold rounded-pill' #style sem variação
     else:
         var_desp = float((despesas-despesas_passado)/despesas_passado)*100
         if var_desp > 0:
             card_desp = '' #Faturamento
-            style_var_despesas = 'bi bi-caret-up-fill text-success bg-black bg-opacity-50 p-1 fw-bold rounded' # style para variação positiva
+            style_var_despesas = 'bi bi-caret-up-fill text-success bg-black bg-opacity-75 p-1 fw-bold rounded-pill' # style para variação positiva
         elif var_desp < 0:
             card_desp = '' #Faturamento
-            style_var_despesas = 'bi bi-caret-down-fill text-danger bg-black bg-opacity-50 p-1 fw-bold rounded' # style para variação negativa
+            style_var_despesas = 'bi bi-caret-down-fill text-danger bg-black bg-opacity-75 p-1 fw-bold rounded-pill' # style para variação negativa
         else:
             card_desp = '' #Faturamento
-            style_var_despesas = 'bi bi-dash text-warning bg-black bg-opacity-50 p-1 fw-bold rounded' # style sem variação
+            style_var_despesas = 'bi bi-dash text-warning bg-black bg-opacity-75 p-1 fw-bold rounded-pill' # style sem variação
         var_despesas = '{:,.2f}%'.format(var_desp)
 
     
@@ -615,13 +615,13 @@ card_numerovendas = dbc.Card(id = 'card-quantidadeVendas', children=[
             dbc.CardImg(
                 src= "/assets/QuantidadeT.png",
                 top = True,
-                style={'opacity': '1'}
+                style={'opacity': '1', 'border-radius': '10px', 'background-color':'transparent'}
             ),
             dbc.CardImgOverlay(
                 dbc.CardBody([
 
                     html.Div([
-                        html.H4("Número Transações", style = {'color': 'white', 'fontWeight': 'bold', 'margin': '0px'}),
+                        html.H4("Número Transações", style = {'color': 'white', 'fontWeight': 'bold', 'margin': '0px', 'text-shadow': '2px 2px 2px rgba(0, 0, 0, 0.2)'}),
                         # Definindo o ícone info com a descrição do card
                         html.I(className="bi bi-info-lg", title = 'Este card apresenta o número de transaçãoes realizadas bem como o ticket médio no período selecionada. A variação percentual em relação ao período anterior também é indicada, permitindo avaliar se houve um aumento ou redução no número de transações e no ticket médio.'
                                ' Caso o card apresente a cor vermelha, significa que houve uma variação negativa em relação ao período anterior. Se apresentar a cor verde, indica uma variação positiva e, caso fique amarelo, não houve variação significativa.', 
@@ -631,21 +631,25 @@ card_numerovendas = dbc.Card(id = 'card-quantidadeVendas', children=[
                     
                     html.Div([
                         html.P(id = 'quantidadeVendas', children = [],
-                           style={'color': 'white', 'font-size': '22px', 'display': 'inline-block', 'width': '50%'}), # número de vendas
-
-                        html.I(id = 'variacao-quantidadeVendas', style={'color': 'white', 'font-size': '12px', 'margin': '0px', 
-                                                               'display': 'inline-block', 'fontWeight': 'bold'}),  #número de transações
+                           style={'color': 'white', 'font-size': '22px', 'display': 'inline-block', 'fontWeight': '500', 'font-family': 'Poppins, sans-serif', 'width': '50%', 'text-shadow': '0px 4px 10px  rgba(0, 0, 0, 0.4)'}), # número de vendas
+                        html.Div([
+                            html.I(id = 'variacao-quantidadeVendas', style={'color': 'white', 'font-size': '12px', 'margin': '0px', 
+                                                                'fontWeight': 'bold', 'text-shadow': '0px 2px 10px  rgba(0, 0, 0, 0.4)'}),  #número de transações
+                        ], style = {'display': 'inline-block', 'box-shadow':'0 0.6em 1.0em -0.5em rgba(0,0,0,1)', 'border-radius':'15px'})
+                        
                     ]),
                     html.Div(
                     [
-                        html.P(['Ticket Médio'], style={'color': 'white', 'fontWeight': 'bold', 'margin': '0px'}),
+                        html.P(['Ticket Médio'], style={'color': 'white', 'fontWeight': 'bold', 'margin': '0px', 'text-shadow': '0px 2px 10px  rgba(0, 0, 0, 0.4)'}),
                         html.Div([
     
-                            html.I(id = 'ticket-medio', style={'color': 'white', 'font-size': '16px', 'margin': '0px', 
-                                                               'display': 'inline-block', 'width': '50%'}),  #ticket_medio
+                            html.P(id = 'ticket-medio', style={'color': 'white', 'font-size': '15px', 'fontWeight': '500', 'font-family': 'Poppins, sans-serif', 'margin': '0px',
+                                                               'display': 'inline-block', 'text-shadow': '0px 2px 10px  rgba(0, 0, 0, 0.4)', 'width': '50%'}),  #ticket_medio
+                            html.Div([
+                                html.I(id = 'variacao-ticket-medio', style={'color': 'white', 'margin': '0px',
+                                                                         'fontWeight': 'bold', 'font-size': '12px'})  #Variação ticket_medio
+                            ], style = {'display': 'inline-block', 'box-shadow':'0 0.6em 1.0em -0.5em rgba(0,0,0,1)', 'border-radius':'15px'})
                             
-                            html.I(id = 'variacao-ticket-medio', style={'color': 'white', 'font-size': '16px', 'margin': '0px',
-                                                                        'display': 'inline-block', 'fontWeight': 'bold', 'font-size': '12px'})  #Variação ticket_medio
                         ])
                         
                     ])
@@ -653,7 +657,7 @@ card_numerovendas = dbc.Card(id = 'card-quantidadeVendas', children=[
                 ])
             ),
 
-        ], style = {'width': '19rem', "fontFamily": fonte, 'box-shadow': '3px 3px 10px 2px rgba(0, 0, 0, 0.2)'}
+        ], style = {'width': '19rem', "fontFamily": fonte, 'border': 'transparent', 'background-color':'#84909C', 'box-shadow': 'rgb(38, 57, 77) 0px 10px 20px -5px', 'border-radius': '10px'}
         )
 
 # Card faturamento
@@ -661,13 +665,13 @@ card_faturamento = dbc.Card(id = 'card-faturamento-style', children=[
             dbc.CardImg(
                 src= "/assets/vendas.png",
                 top = True,
-                style={'opacity': '1'}
+                style={'opacity': '1', 'border-radius': '10px'}
             ),
             dbc.CardImgOverlay(
                 dbc.CardBody([
 
                     html.Div([
-                        html.H4("Faturamento", style = {'color': 'white', 'fontWeight': 'bold'}),
+                        html.H4("Faturamento", style = {'color': 'white', 'text-shadow': '0px 2px 10px  rgba(0, 0, 0, 0.4)', 'fontWeight': 'bold', 'font-family': 'Poppins, sans-serif'}),
                         # Definindo o ícone info com a descrição do card
                         html.I(className="bi bi-info-lg", title = 'Este card apresenta o faturamento em reais durante o período selecionado. Além disso, é possível visualizar a variação em relação ao período anterior, permitindo uma análise da evolução do faturamento ao longo do tempo.'
                                ' Caso o card apresente a cor vermelha, significa que houve uma variação negativa em relação ao período anterior. Se apresentar a cor verde, indica uma variação positiva e, caso fique amarelo, não houve variação significativa.', 
@@ -677,15 +681,18 @@ card_faturamento = dbc.Card(id = 'card-faturamento-style', children=[
                     
                     html.Div([
                         html.P(id = 'faturamento', children = [],
-                           style={'color': 'white', 'font-size': '22px', 'width': '100%', 'margin': '0'}), # Faturamento
+                           style={'fontWeight': '500', 'font-family': 'Poppins, sans-serif', 'color': 'white', 'text-shadow': '0px 2px 10px  rgba(0, 0, 0, 0.4)', 'font-size': '22px', 'width': '100%', 'margin': '0'}), # Faturamento
+                        html.H4(''),
+                        html.Div([
+                            html.I(id = 'variacao-faturamento', style={'color': 'white', 'font-size': '12px', 
+                                                                  'fontWeight': 'bold'}) # Faturamento
+                        ], style = {'display': 'inline-block', 'box-shadow':'0 0.6em 1.0em -0.5em rgba(0,0,0,1)', 'border-radius':'15px'})
                         
-                        html.I(id = 'variacao-faturamento', style={'color': 'white', 'font-size': '12px', 'margin': '0px', 
-                                                                 'width': '35%', 'fontWeight': 'bold','margin-top':'0'}) # Faturamento
                     ])
                     
                 ])
             )
-        ], style = {'width': '19rem', "fontFamily": fonte, 'box-shadow': '3px 3px 10px 2px rgba(0, 0, 0, 0.2)'}
+        ], style = {'width': '19rem', "fontFamily": fonte, 'border': 'transparent', 'background-color':'#939C4E', 'box-shadow': 'rgb(38, 57, 77) 0px 10px 20px -5px', 'border-radius': '10px'}
         )
 
 # Card valor (R$) despesas
@@ -693,13 +700,13 @@ card_despesas = dbc.Card(id = 'card-despesas-style', children=[
             dbc.CardImg(
                 src= "/assets/despesas.png",
                 top = True,
-                style={'opacity': '1'}
+                style={'opacity': '1', 'border-radius': '10px'}
             ),
             dbc.CardImgOverlay(
                 dbc.CardBody([
 
                     html.Div([
-                        html.H4("Gastos", style = {'color': 'white', 'fontWeight': 'bold'}),
+                        html.H4("Gastos", style = {'fontWeight': 'bold', 'font-family': 'Poppins, sans-serif', 'text-shadow': '0px 2px 10px  rgba(0, 0, 0, 0.4)', 'color': 'white', 'fontWeight': 'bold'}),
                         # Definindo o ícone info com a descrição do card
                         html.I(className="bi bi-info-lg", title = 'Este card exibe o valor total, em reais, dos gastos realizados no período selecionado, bem como a variação em relação ao período anterior.'
                                ' Caso o card apresente a cor vermelha, significa que houve uma variação negativa em relação ao período anterior. Se apresentar a cor verde, indica uma variação positiva e, caso fique amarelo, não houve variação significativa.', 
@@ -709,14 +716,17 @@ card_despesas = dbc.Card(id = 'card-despesas-style', children=[
 
                     html.Div([
                         html.P(id = 'despesas', children = [],
-                           style={'color': 'white', 'font-size': '22px', 'width': '100%', 'margin': '0'}), # Despesas
-                        
-                        html.I(id = 'variacao-despesas', style={'color': 'white', 'font-size': '12px', 'margin': '0px', 
+                           style={'fontWeight': '500', 'font-family': 'Poppins, sans-serif', 'text-shadow': '0px 2px 10px  rgba(0, 0, 0, 0.4)', 'color': 'white', 'font-size': '22px', 'width': '100%', 'margin': '0'}), # Despesas
+                        html.H4(''),
+                        html.Div([
+                            html.I(id = 'variacao-despesas', style={'color': 'white', 'font-size': '12px', 'margin': '0px', 
                                                                  'width': '35%', 'fontWeight': 'bold','margin-top':'0'}) # Despesas
+                        ], style = {'display': 'inline-block', 'box-shadow':'0 0.6em 1.0em -0.5em rgba(0,0,0,1)', 'border-radius':'15px'})
+
                     ])
                 ])
             )
-        ], style = {'width': '19rem', "fontFamily": fonte, 'box-shadow': '3px 3px 10px 2px rgba(0, 0, 0, 0.2)'}
+        ], style = {'width': '19rem', "fontFamily": fonte, 'border': 'transparent', 'background-color':'#9C7636', 'box-shadow': 'rgb(38, 57, 77) 0px 10px 20px -5px', 'border-radius': '10px'}
         )
 
 
@@ -725,13 +735,13 @@ card_resultado = dbc.Card(id = 'card-resultado-style', children=[
             dbc.CardImg(
                 src= "/assets/lucro.png",
                 top = True,
-                style={'opacity': '1'}
+                style={'opacity': '1', 'border-radius': '10px'}
             ),
             dbc.CardImgOverlay(
                 dbc.CardBody([
 
                     html.Div([
-                        html.H4("Resultado", style = {'color': 'white', 'fontWeight': 'bold'}),
+                        html.H4("Resultado", style = {'text-shadow': '0px 2px 10px  rgba(0, 0, 0, 0.4)', 'color': 'white', 'fontWeight': 'bold'}),
                         # Definindo o ícone info com a descrição do card
                         html.I(className="bi bi-info-lg", title = 'Este card apresenta o valor total, em reais, da diferença entre o faturamento e os gastos dispendidos no período selecionado.'
                                ' Caso o card apresente a cor vermelha, significa que houve uma variação negativa em relação ao período anterior. Se apresentar a cor verde, indica uma variação positiva e, caso fique amarelo, não houve variação significativa.', 
@@ -741,12 +751,12 @@ card_resultado = dbc.Card(id = 'card-resultado-style', children=[
                     
                     html.Div([
                         html.P(id = 'resultado', children = [],
-                           style={'color': 'white', 'font-size': '22px', 'width': '100%', 'margin': '0'}), # Resultado
+                           style={'fontWeight': '500', 'font-family': 'Poppins, sans-serif', 'text-shadow': '0px 2px 10px  rgba(0, 0, 0, 0.4)', 'color': 'white', 'font-size': '22px', 'width': '100%', 'margin': '0'}), # Resultado
                     ])
                     
                 ])
             )
-        ], style = {'width': '19rem', "fontFamily": fonte, 'box-shadow': '3px 3px 10px 2px rgba(0, 0, 0, 0.2)'}
+        ], style = {'width': '19rem', "fontFamily": fonte, 'border': 'transparent', 'background-color':'#46719C', 'box-shadow': 'rgb(38, 57, 77) 0px 10px 20px -5px', 'border-radius': '10px'}
         )
 
 
