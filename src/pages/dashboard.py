@@ -114,6 +114,7 @@ def carregar_dados():
 
 # função para formatar os ANOS como opções de DropdownMenu
 def gerar_opcoes_ano():
+    global df, df_despesa
     df, df_despesa = carregar_dados()
 
     # Obtendo lista de anos do dataframe vendas
@@ -126,12 +127,13 @@ def gerar_opcoes_ano():
     anos = sorted(list(set(ano_vendas + ano_despesas)))
     
     opcoes = [{'label': str(ano), 'value': ano} for ano in anos]
-    return opcoes
+
+    return opcoes, df, df_despesa
 
 # função para formatar os MESES como opções de DropdownMenu
-def gerar_opcoes_mes(ano):
+def gerar_opcoes_mes(ano, df, df_despesa):
 
-    df, df_despesa = carregar_dados() # Obtendo os dados da tabela
+    #df, df_despesa = carregar_dados() # Obtendo os dados da tabela
     
     # Obtendo lista de meses do dataframe vendas
     meses_vendas = sorted(df[df['Data da Venda'].dt.year == ano]['Data da Venda'].dt.month.unique())
@@ -143,7 +145,8 @@ def gerar_opcoes_mes(ano):
     meses = sorted(list(set(meses_vendas + meses_despesas)))
    
     opcoes = [{'label': str(mes), 'value': mes} for mes in meses]
-
+    print(ano)
+    print(opcoes)
     return opcoes
 
 # Função calculo para o card número de vendas
@@ -1091,6 +1094,59 @@ def pop_up(n1, n2, estado):
     return estado
 
 
+
+# Callback para gerar as opçãoes de ano
+@callback(
+    Output('filtro-ano', 'children'),
+    Input('interval-component', 'interval')
+)
+
+def atualizar_opcoes_ano(n):
+    global opcoes_ano
+    opcoes_ano, _, _ = gerar_opcoes_ano()
+    
+    children_anos = [
+        dbc.DropdownMenuItem(opcao['label'], id={'index': i, 'type': 'ano-dropdown'}) for i, opcao in enumerate(opcoes_ano)
+    ]
+
+    return children_anos
+
+
+# Callback para gerar as opçãoes de mês
+@callback(
+    Output('filtro-mes', 'children'),
+    Output('store_ano', 'data'),
+    Input({'type': 'ano-dropdown', 'index': ALL}, 'n_clicks'),
+    State({'type': 'ano-dropdown', 'index': ALL}, 'id'),
+    prevent_initial_call=True
+)
+def atualizar_opcoes_mes(n, ids):
+
+    # Obtenha o id do ano selecionado no filtro-ano
+    triggered_id = dash.callback_context.triggered[0]['prop_id'].split('.')[0]
+
+    # Decodifica o objeto retornando o index. 
+    input_id = json.loads(triggered_id)["index"]# Neste caso retorna a posição em que o botao delete foi assionado.
+    #ano_selecionado, _, _ = gerar_opcoes_ano()
+    ano_selecionado = opcoes_ano[input_id] # Retorna o valor e o label do dropdown ano selecionado no seguinte formato:
+    # ex: {'label': '1998', 'value': 1998}
+    print(ano_selecionado['value'])
+    ano = ano_selecionado['value']
+    # Gere as opções de mês correspondentes ao ano selecionado
+    opcoes_mes = gerar_opcoes_mes(ano, df, df_despesa)
+    
+    children_meses = [
+        dbc.DropdownMenuItem(opcao['label'], id={'index': i, 'type': 'mes-dropdown'}) 
+        for i, opcao in enumerate(opcoes_mes)
+        
+    ] + [
+        dbc.DropdownMenuItem(divider=True),
+        dbc.DropdownMenuItem("Todos os meses", id={'index': len(opcoes_mes)+1, 'type': 'mes-dropdown-total'}) 
+    ]
+    
+    return children_meses, ano
+
+
 @callback(
         Output('card-quantidadeVendas', 'className'),
         Output('quantidadeVendas', 'children'),
@@ -1109,7 +1165,6 @@ def pop_up(n1, n2, estado):
         Output('variacao-despesas', 'className'),
         Output('card-resultado-style', 'className'),
         Output('resultado', 'children'),
-        Output('store_ano', 'data'),
         Output('store_mes', 'data'),
         Output('store_mes-aux', 'data'),
         Output('faturamento_despesas', 'figure'),
@@ -1129,7 +1184,7 @@ def pop_up(n1, n2, estado):
 
 def carregar_output(intervalo, ano, mes, mes_aux, n_ano, n_mes, n_mes_total, ano_selecionado, mes_selecionado):
 
-    df, df_despesa = carregar_dados() #Chamando a função que carrega os dados a partir do MongoDB
+    #df, df_despesa = carregar_dados() #Chamando a função que carrega os dados a partir do MongoDB
     
     # Obtendo o ano e o mês selecionado
     # Obtenha o id do ano selecionado no filtro-ano
@@ -1138,16 +1193,8 @@ def carregar_output(intervalo, ano, mes, mes_aux, n_ano, n_mes, n_mes_total, ano
     # Decodifica o objeto retornando o index. 
     input_id = json.loads(triggered_id)# Neste caso retorna a posição em que o botao delete foi assionado.
     
-    if input_id['type'] == 'ano-dropdown':
-        ano_selecionado = gerar_opcoes_ano()[input_id['index']]['value'] # Retorna o valor e o label do dropdown ano selecionado
-        ano = ano_selecionado
-        
-        noupdate = dash.no_update
-
-        return noupdate, noupdate, noupdate, noupdate, noupdate, noupdate, noupdate, noupdate, noupdate, noupdate, noupdate, noupdate, noupdate, noupdate, noupdate, noupdate, noupdate, ano, noupdate, noupdate, noupdate, noupdate, noupdate
-    
     if input_id['type'] == 'mes-dropdown':
-        opcoes_mes = gerar_opcoes_mes(ano)
+        opcoes_mes = gerar_opcoes_mes(ano, df, df_despesa)
         mes_aux = len(opcoes_mes)
         mes = opcoes_mes[input_id['index']]['value']
         
@@ -1201,57 +1248,11 @@ def carregar_output(intervalo, ano, mes, mes_aux, n_ano, n_mes, n_mes_total, ano
         fig_pie_map = pie_chart_mapa(df, ano, mes, filtro='mes')
 
 
-    return x, num_vendas, var_nunvendas, style_var_nunvendas, ticket_medio, variacao_ticket, style_varticket, card_fatur, fatur, var_fatur, style_var_fatur, card_desp, desp, var_despesas, style_var_despesas, card_result, result, ano, mes, mes_aux, fig_fatdesp, fig_mapa, fig_pie_map
+    return x, num_vendas, var_nunvendas, style_var_nunvendas, ticket_medio, variacao_ticket, style_varticket, card_fatur, fatur, var_fatur, style_var_fatur, card_desp, desp, var_despesas, style_var_despesas, card_result, result, mes, mes_aux, fig_fatdesp, fig_mapa, fig_pie_map
 
 
 
-# Callback para gerar as opçãoes de ano
-@callback(
-    Output('filtro-ano', 'children'),
-    Input('interval-component', 'interval')
-)
 
-def atualizar_opcoes_ano(n):
-    opcoes_ano = gerar_opcoes_ano()
-    
-    children_anos = [
-        dbc.DropdownMenuItem(opcao['label'], id={'index': i, 'type': 'ano-dropdown'}) for i, opcao in enumerate(opcoes_ano)
-    ]
-
-    return children_anos
-
-
-# Callback para gerar as opçãoes de mês
-@callback(
-    Output('filtro-mes', 'children'),
-    Input({'type': 'ano-dropdown', 'index': ALL}, 'n_clicks'),
-    State({'type': 'ano-dropdown', 'index': ALL}, 'id'),
-    prevent_initial_call=True
-)
-def atualizar_opcoes_mes(n, ids):
-
-    # Obtenha o id do ano selecionado no filtro-ano
-    triggered_id = dash.callback_context.triggered[0]['prop_id'].split('.')[0]
-
-    # Decodifica o objeto retornando o index. 
-    input_id = json.loads(triggered_id)["index"]# Neste caso retorna a posição em que o botao delete foi assionado.
-
-    ano_selecionado = gerar_opcoes_ano()[input_id] # Retorna o valor e o label do dropdown ano selecionado no seguinte formato:
-    # ex: {'label': '1998', 'value': 1998}
-
-    # Gere as opções de mês correspondentes ao ano selecionado
-    opcoes_mes = gerar_opcoes_mes(ano_selecionado['value'])
-    
-    children_meses = [
-        dbc.DropdownMenuItem(opcao['label'], id={'index': i, 'type': 'mes-dropdown'}) 
-        for i, opcao in enumerate(opcoes_mes)
-        
-    ] + [
-        dbc.DropdownMenuItem(divider=True),
-        dbc.DropdownMenuItem("Todos os meses", id={'index': len(opcoes_mes)+1, 'type': 'mes-dropdown-total'}) 
-    ]
-    
-    return children_meses
 
 
 # Callback para fazer atualizar o label do dropdown ano
@@ -1302,6 +1303,12 @@ def func_coorte(ano):
     # Criando uma coluna nova contendo apenas o mês e o ano analisado.
     selecao['Data'] = selecao['Data da Venda'].apply(lambda x: x.strftime('%Y-%m'))
     
+    # Definindo os diferentes CPFs de acordo com a data
+    cpf_dif = selecao.groupby('Data')['CPF'].nunique()
+    #Convertendo em um DataFrame
+    cpf_dif = pd.DataFrame({'Data': cpf_dif.index, 'Clientes': cpf_dif.values})
+    print(cpf_dif)
+
     #Agora vamos gerar um id para cada cliente
     # Obtendo a lista de CPF do DataFrame
     num_cpf = selecao['CPF'].unique()
@@ -1331,8 +1338,8 @@ def func_coorte(ano):
     #Configurando novamente o index
     coorte.reset_index(inplace = True)
     coorte.set_index(['coorte','coorte_periodo'], inplace = True)
-    
-    
+
+          
     coorte_tamanho = coorte['total_clientes'].groupby(level = 0).first()
     
 
@@ -1399,7 +1406,7 @@ def func_coorte(ano):
     coorte.set_index(['coorte_periodo'], inplace = True)
 
     # Definindo o gráfico
-    fig_line = px.line(coorte, x = 'coorte', y = 'total_clientes', labels={'total_clientes': 'Total de clientes', 'coorte':'Data'})
+    fig_line = px.line(cpf_dif, x = 'Data', y = 'Clientes', labels={'Clientes': 'Total de clientes', 'Data':'Data'})
 
     # Editando o gráfico
     fig_line.update_layout(
