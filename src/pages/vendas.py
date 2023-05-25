@@ -230,8 +230,6 @@ layout = html.Div([
     # Ativa uma vez por dia ou quando a página é recarregada
     dcc.Interval(id= 'mongoDB', interval = 86400000, n_intervals = 0),
 
-    html.Div(id='espaço', children=[]),
-    html.Div(id='espaço2', children=[])
 ], 
 ),
 
@@ -260,11 +258,27 @@ def upload(contents, filename, date):
     else:
         content_type, content_string = contents.split(',')
 
+        columns_aux = [
+            "Vendedor",
+            "Data da Venda",
+            "Cliente",
+            "CPF",
+            "Valor (R$)",
+            "Cod_Produto",
+            "Quantidade",
+            "UF",
+            "Forma_Pagamento"
+        ]
+
         decoded = base64.b64decode(content_string)
         try:
             if 'csv' in filename:
             # Assume que o usuário carregou um arquivo CSV 
                 df = pd.read_csv(io.StringIO(decoded.decode('utf-8')))
+
+                if list(df) != columns_aux:
+                    popup_erro.displayed = True
+
                 # Converta a coluna de data para o tipo datetime
                 df['Data da Venda'] = pd.to_datetime(df['Data da Venda'])
                 # Ajuste o formato da data para "2023-11-21"
@@ -274,6 +288,10 @@ def upload(contents, filename, date):
             elif 'xls' in filename:
             # Assume que o usuário carregou um excel
                 df = pd.read_excel(io.BytesIO(decoded))
+
+                if list(df) != columns_aux:
+                    popup_erro.displayed = True
+
                 # Converta a coluna de data para o tipo datetime
                 df['Data da Venda'] = pd.to_datetime(df['Data da Venda'])
                 # Ajuste o formato da data para "2023-11-21"

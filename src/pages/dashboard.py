@@ -145,8 +145,7 @@ def gerar_opcoes_mes(ano, df, df_despesa):
     meses = sorted(list(set(meses_vendas + meses_despesas)))
    
     opcoes = [{'label': str(mes), 'value': mes} for mes in meses]
-    print(ano)
-    print(opcoes)
+
     return opcoes
 
 # Função calculo para o card número de vendas
@@ -1130,9 +1129,10 @@ def atualizar_opcoes_mes(n, ids):
     #ano_selecionado, _, _ = gerar_opcoes_ano()
     ano_selecionado = opcoes_ano[input_id] # Retorna o valor e o label do dropdown ano selecionado no seguinte formato:
     # ex: {'label': '1998', 'value': 1998}
-    print(ano_selecionado['value'])
+   
     ano = ano_selecionado['value']
     # Gere as opções de mês correspondentes ao ano selecionado
+    global opcoes_mes
     opcoes_mes = gerar_opcoes_mes(ano, df, df_despesa)
     
     children_meses = [
@@ -1194,7 +1194,7 @@ def carregar_output(intervalo, ano, mes, mes_aux, n_ano, n_mes, n_mes_total, ano
     input_id = json.loads(triggered_id)# Neste caso retorna a posição em que o botao delete foi assionado.
     
     if input_id['type'] == 'mes-dropdown':
-        opcoes_mes = gerar_opcoes_mes(ano, df, df_despesa)
+        #opcoes_mes = gerar_opcoes_mes(ano, df, df_despesa)
         mes_aux = len(opcoes_mes)
         mes = opcoes_mes[input_id['index']]['value']
         
@@ -1297,7 +1297,7 @@ def atualizar_dropdown_label(ano, mes, mes_full, ano_aux, pos_mes, pos_mes_aux):
 # Análise coorte
 def func_coorte(ano):
     # Obtendo o DataFrame
-    df, _ = carregar_dados() # Obtendo os dados da tabela
+    #df, _ = carregar_dados() # Obtendo os dados da tabela
     # Selecionando os dados de acordo com o ano
     selecao = df[(df['Data da Venda'].dt.year == ano)]
     # Criando uma coluna nova contendo apenas o mês e o ano analisado.
@@ -1307,8 +1307,7 @@ def func_coorte(ano):
     cpf_dif = selecao.groupby('Data')['CPF'].nunique()
     #Convertendo em um DataFrame
     cpf_dif = pd.DataFrame({'Data': cpf_dif.index, 'Clientes': cpf_dif.values})
-    print(cpf_dif)
-
+    
     #Agora vamos gerar um id para cada cliente
     # Obtendo a lista de CPF do DataFrame
     num_cpf = selecao['CPF'].unique()
@@ -1441,7 +1440,9 @@ def func_coorte(ano):
 # Função para gráfico de barras e pie
 def bar_pie_graph(ano):
     # Obtendo os Data Frames
-    df_vendas, df_despesas = carregar_dados() # Obtendo os dados da tabela
+    df_vendas = df
+    df_despesas = df_despesa
+    #df_vendas, df_despesas = carregar_dados() # Obtendo os dados da tabela
 
     # Tratando Data Frame das vendas 
     # Selecionando os dados de acordo com o ano

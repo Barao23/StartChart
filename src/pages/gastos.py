@@ -234,8 +234,6 @@ layout = html.Div([
     # Ativa uma vez por dia ou quando a página é recarregada
     dcc.Interval(id= 'mongoDB', interval = 86400000, n_intervals = 0),
 
-    html.Div(id='espaço-despesas', children=[]),
-    html.Div(id='espaço2', children=[])
 ], 
 ),
 
@@ -261,11 +259,25 @@ def upload(contents, filename, date):
     else:
         content_type, content_string = contents.split(',')
 
+        columns_aux_despesa = [
+            "Tipo de gasto",
+            "Descrição",
+            "Valor (R$)",
+            "Data Pagamento",
+            "Data Vencimento",
+            "Departamento",
+        ]
+
+
         decoded = base64.b64decode(content_string)
         try:
             if 'csv' in filename:
             # Assume que o usuário carregou um arquivo CSV 
                 df = pd.read_csv(io.StringIO(decoded.decode('utf-8')))
+
+                if list(df) != columns_aux_despesa:
+                    popup_erro.displayed = True   
+
                 # Converta a coluna de data para o tipo datetime
                 df['Data Pagamento'] = pd.to_datetime(df['Data Pagamento'])
                 df['Data Vencimento'] = pd.to_datetime(df['Data Vencimento'])
@@ -273,18 +285,21 @@ def upload(contents, filename, date):
                 df['Data Pagamento'] = df['Data Pagamento'].dt.strftime('%Y-%m-%d')
                 df['Data Vencimento'] = df['Data Vencimento'].dt.strftime('%Y-%m-%d')
                                
-                dff = df.to_dict('records')
+            
             elif 'xls' in filename:
             # Assume que o usuário carregou um arquivo excel 
                 df = pd.read_excel(io.BytesIO(decoded))
+
+                if list(df) != columns_aux_despesa:
+                    popup_erro.displayed = True
+
                 # Converta a coluna de data para o tipo datetime
                 df['Data Pagamento'] = pd.to_datetime(df['Data Pagamento'])
                 df['Data Vencimento'] = pd.to_datetime(df['Data Vencimento'])
                 # Ajuste o formato da data para "2023-11-21"
                 df['Data Pagamento'] = df['Data Pagamento'].dt.strftime('%Y-%m-%d')
                 df['Data Vencimento'] = df['Data Vencimento'].dt.strftime('%Y-%m-%d')
-
-                dff = df.to_dict('records')
+              
 
 
         except Exception as e:
@@ -356,9 +371,6 @@ def output(conteudo, mongo, n, nome, datas, popup_displayed):
         if not popup_displayed: #Se o popup_erro.displayed = False
             popup_erro.displayed = True
         
-       
-
-
 
     columns= [{'name': i, 'id': i} for i in result.columns]
     # Criando um dicionário com os tipos de input para cada coluna desejada
