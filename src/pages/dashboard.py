@@ -1147,6 +1147,40 @@ def atualizar_opcoes_mes(n, ids):
     return children_meses, ano
 
 
+# Callback para fazer atualizar o label do dropdown ano
+@callback(
+    Output("filtro-ano", 'label'),
+    Output("filtro-mes", 'label'),
+    Output("mes-full", 'data'),
+    Output("ano-aux", 'data'),
+    Input('store_ano', 'data'),
+    Input('store_mes', 'data'),
+    State("mes-full", 'data'),
+    State("ano-aux", 'data'),
+    State({'type': 'mes-dropdown', 'index': ALL}, 'n_clicks'),
+    State({'type': 'mes-dropdown-total', 'index': ALL}, 'n_clicks'),
+    
+)
+def atualizar_dropdown_label(ano, mes, mes_full, ano_aux, pos_mes, pos_mes_aux):
+    
+    if not mes_full:
+        mes_full = 0
+        ano_aux = ano
+
+    if ano_aux != ano:
+        anos_aux = ano
+        mes_full = 0
+ 
+    if pos_mes_aux[0] is not None and int(pos_mes_aux[0]) > mes_full:
+        mes_full = pos_mes_aux[0]
+        mes = 'all'
+
+    ano = 'Ano: '+str(ano)
+    mes = 'Mês: '+str(mes)
+
+    return ano, mes, mes_full, ano_aux
+
+
 @callback(
         Output('card-quantidadeVendas', 'className'),
         Output('quantidadeVendas', 'children'),
@@ -1251,42 +1285,6 @@ def carregar_output(intervalo, ano, mes, mes_aux, n_ano, n_mes, n_mes_total, ano
     return x, num_vendas, var_nunvendas, style_var_nunvendas, ticket_medio, variacao_ticket, style_varticket, card_fatur, fatur, var_fatur, style_var_fatur, card_desp, desp, var_despesas, style_var_despesas, card_result, result, mes, mes_aux, fig_fatdesp, fig_mapa, fig_pie_map
 
 
-
-
-
-
-# Callback para fazer atualizar o label do dropdown ano
-@callback(
-    Output("filtro-ano", 'label'),
-    Output("filtro-mes", 'label'),
-    Output("mes-full", 'data'),
-    Output("ano-aux", 'data'),
-    Input('store_ano', 'data'),
-    Input('store_mes', 'data'),
-    State("mes-full", 'data'),
-    State("ano-aux", 'data'),
-    State({'type': 'mes-dropdown', 'index': ALL}, 'n_clicks'),
-    State({'type': 'mes-dropdown-total', 'index': ALL}, 'n_clicks'),
-    
-)
-def atualizar_dropdown_label(ano, mes, mes_full, ano_aux, pos_mes, pos_mes_aux):
-    
-    if not mes_full:
-        mes_full = 0
-        ano_aux = ano
-
-    if ano_aux != ano:
-        anos_aux = ano
-        mes_full = 0
- 
-    if pos_mes_aux[0] is not None and int(pos_mes_aux[0]) > mes_full:
-        mes_full = pos_mes_aux[0]
-        mes = 'all'
-
-    ano = 'Ano: '+str(ano)
-    mes = 'Mês: '+str(mes)
-
-    return ano, mes, mes_full, ano_aux
 
 # Callback para verificar a atividade dos clientes
 @callback(
