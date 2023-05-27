@@ -72,7 +72,7 @@ def enviar_alerta(assunto, texto, destino):
     email['to'] = destino # quem irá receber o e-mail
     email['from'] = remetente
 
-    password = 'cnmyyhhketemmcel' # Senha gerada em "senhas app" do google
+    password = 'qlqsqnvlzmfxtgfu' # Senha gerada em "senhas app" do google
 
     # Parâmetros do servidor
     server = smtplib.SMTP('smtp.gmail.com', 587) # variável do servidor
@@ -1204,11 +1204,9 @@ def atualizar_dropdown_label(ano, mes, mes_full, ano_aux, pos_mes, pos_mes_aux):
         Output('faturamento_despesas', 'figure'),
         Output('mapa_grafico', 'figure'),
         Output('pie-chart-mapa', 'figure'),
-        Input('interval-component', 'interval'),
         Input('store_ano', 'data'),
         Input('store_mes', 'data'),
         Input('store_mes-aux', 'data'),
-        Input({'type': 'ano-dropdown', 'index': ALL}, 'n_clicks'),
         Input({'type': 'mes-dropdown', 'index': ALL}, 'n_clicks'),
         Input({'type': 'mes-dropdown-total', 'index': ALL}, 'n_clicks'),
         State({'type': 'ano-dropdown', 'index': ALL}, 'id'),
@@ -1216,7 +1214,7 @@ def atualizar_dropdown_label(ano, mes, mes_full, ano_aux, pos_mes, pos_mes_aux):
         prevent_initial_call=True
 )
 
-def carregar_output(intervalo, ano, mes, mes_aux, n_ano, n_mes, n_mes_total, ano_selecionado, mes_selecionado):
+def carregar_output(ano, mes, mes_aux, n_mes, n_mes_total, ano_selecionado, mes_selecionado):
 
     #df, df_despesa = carregar_dados() #Chamando a função que carrega os dados a partir do MongoDB
     
